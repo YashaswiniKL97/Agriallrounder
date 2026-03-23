@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family: 'Segoe UI', sans-serif;
+background: linear-gradient(to right, #eef2f3, #dfe9f3);
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:#333;
+margin-bottom:20px;
+}
+
+/* STATS */
+.stats-container{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.stat-box{
+background:white;
+padding:20px;
+border-radius:15px;
+width:220px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
+
+.blue{color:#2575fc;}
+.orange{color:#ff9100;}
+.green{color:#00c853;}
+.red{color:#e53935;}
+
+/* CHART */
+.chart-box{
+background:white;
+padding:20px;
+margin:20px auto;
+border-radius:15px;
+max-width:700px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* TABS */
+.tabs{
+text-align:center;
+margin:20px 0;
+}
+
+.tabs button{
+background: linear-gradient(135deg,#6a11cb,#2575fc);
+color:white;
+padding:10px 18px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+font-weight:bold;
+}
+
+/* CARDS */
+.card{
+background:white;
+padding:15px;
+margin:15px auto;
+border-radius:15px;
+max-width:500px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* BUTTONS */
+button{
+padding:8px 14px;
+margin:5px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.accept{
+background:green;color:white;
+}
+
+.delete{
+background:red;color:white;
+}
+/* ===== MODERN DROPDOWN ===== */
+select{
+appearance:none;
+-webkit-appearance:none;
+-moz-appearance:none;
+
+padding:10px 35px 10px 12px;
+border-radius:12px;
+border:1px solid #ccc;
+background:#fff;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+outline:none;
+
+background-image:url("data:image/svg+xml;utf8,<svg fill='%23333' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+background-repeat:no-repeat;
+background-position:right 10px center;
+
+transition:0.3s;
+}
+
+select:hover{
+border-color:#2575fc;
+}
+
+select:focus{
+border-color:#2575fc;
+box-shadow:0 0 5px rgba(37,117,252,0.3);
+}
+
+/* ===== STATUS COLORS ===== */
+.status-processing{color:#ff9800;font-weight:bold;}
+.status-shipped{color:#2979ff;font-weight:bold;}
+.status-delivered{color:#00c853;font-weight:bold;}
+.status-cancelled{color:#e53935;font-weight:bold;}
+.status-booked{color:#ff9800;font-weight:bold;}
+.status-completed{color:#00c853;font-weight:bold;}
+
+</style>
+</head>
+
+<body>
+
+<h1>⚙ Admin Dashboard</h1>
+
+<div id="stats"></div>
+
+<div class="chart-box">
+<canvas id="revenueChart"></canvas>
+</div>
+
+<div class="tabs">
+<button onclick="showOrders()">📦 Orders</button>
+<button onclick="showBookings()">🚜 Bookings</button>
+</div>
+
+<div id="content"></div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("orders")) || []
+let bookings = JSON.parse(localStorage.getItem("machineBookings")) || []
+
+function loadStats(){
+
+let orderRevenue = 0
+let bookingRevenue = 0
+
+let cancelRevenue = 0
+let returnRevenue = 0
+let cancelCount = 0
+let returnCount = 0
+
+orders.forEach(o => {
+
+let amount = Number(o.total || 0)
+
+orderRevenue += amount
+
+if(o.status === "Cancelled"){
+cancelRevenue += amount
+cancelCount++
+}
+
+if(o.return){
+returnRevenue += amount
+returnCount++
+}
+
+})
+
+/* BOOKINGS */
+
+let bookingCancelRevenue = 0
+let bookingCancelCount = 0
+let rebookingCount = 0
+
+bookings.forEach(b => {
+
+let amount = Number(b.total || 0)
+
+bookingRevenue += amount
+
+/* 🔴 CANCELLED BOOKING */
+if(b.status === "Cancelled"){
+bookingCancelRevenue += amount
+bookingCancelCount++
+}
+
+/* 🔄 REBOOKING */
+if(b.status === "Rescheduled"){
+rebookingCount++
+}
+
+})
+
+
+let finalOrderRevenue = orderRevenue - cancelRevenue - returnRevenue
+let finalBookingRevenue = bookingRevenue - bookingCancelRevenue
+
+let finalRevenue = finalOrderRevenue + finalBookingRevenue
+
+document.getElementById("stats").innerHTML = `
+
+<!-- 🧾 ORDERS ROW -->
+<div class="stats-container">
+
+<div class="stat-box">
+<h3>Total Orders</h3>
+<h2 class="blue">${orders.length}</h2>
+</div>
+
+<div class="stat-box">
+<h3>Cancelled Orders</h3>
+<h2 class="red">${cancelCount}</h2>
+<p>₹${cancelRevenue}</p>
+</div>
+
+<div class="stat-box">
+<h3>Returned Orders</h3>
+<h2 class="orange">${returnCount}</h2>
+<p>₹${returnRevenue}</p>
+</div>
+
+<div class="stat-box">
+<h3>Final Order Revenue</h3>
+<h2 class="green">₹${finalOrderRevenue}</h2>
+</div>
+
+</div>
+
+
+<!-- 🚜 BOOKINGS ROW -->
+<div class="stats-container">
+
+<div class="stat-box">
+<h3>Total Bookings</h3>
+<h2 class="orange">${bookings.length}</h2>
+</div>
+
+<div class="stat-box">
+<h3>Cancelled Bookings</h3>
+<h2 class="red">${bookingCancelCount}</h2>
+<p>₹${bookingCancelRevenue}</p>
+</div>
+
+<div class="stat-box">
+<h3>Rebookings</h3>
+<h2 class="blue">${rebookingCount}</h2>
+</div>
+
+<div class="stat-box">
+<h3>Final Booking Revenue</h3>
+<h2 class="green">₹${finalBookingRevenue}</h2>
+</div>
+
+</div>
+
+
+<!-- 💰 FINAL ROW -->
+<div class="stats-container">
+
+<div class="stat-box" style="width:300px">
+<h3>Final Revenue</h3>
+<h2 class="green">₹${finalRevenue}</h2>
+</div>
+
+</div>
+
+`
+}
+
+/* CHART */
+
+function loadChart(){
+
+let orderMap = {}
+let bookingMap = {}
+let finalMap = {}
+
+// ORDERS
+orders.forEach(o=>{
+let d = new Date(o.createdDate).toLocaleDateString("en-IN")
+
+let amount = Number(o.total || 0)
+
+// cancel & return subtract
+if(o.status === "Cancelled") amount = 0
+if(o.return) amount = 0
+
+orderMap[d] = (orderMap[d] || 0) + amount
+})
+
+// BOOKINGS
+bookings.forEach(b=>{
+let d = new Date(b.createdDate).toLocaleDateString("en-IN")
+
+let amount = Number(b.total || 0)
+
+// cancel booking
+if(b.status === "Cancelled") amount = 0
+
+bookingMap[d] = (bookingMap[d] || 0) + amount
+})
+
+// FINAL
+let labels = [...new Set([
+...Object.keys(orderMap),
+...Object.keys(bookingMap)
+])]
+
+let orderData = labels.map(d => orderMap[d] || 0)
+let bookingData = labels.map(d => bookingMap[d] || 0)
+
+let finalData = labels.map((d,i)=> orderData[i] + bookingData[i])
+
+// CHART
+new Chart(document.getElementById("revenueChart"),{
+type:'line',
+data:{
+labels:labels,
+datasets:[
+{
+label:'Final Order Revenue',
+data:orderData,
+borderWidth:2
+},
+{
+label:'Final Booking Revenue',
+data:bookingData,
+borderWidth:2
+},
+{
+label:'Final Total Revenue',
+data:finalData,
+borderWidth:3
+}
+]
+}
+})
+
+}
+
+/* ORDERS */
+
+function showOrders(){
+
+let content = document.getElementById("content")
+
+content.innerHTML="<h2>Orders</h2>"
+
+orders.forEach((o,index)=>{
+
+content.innerHTML += `
+<div class="card">
+
+<p><b>ID:</b> ${o.orderID}</p>
+<p><b>Name:</b> ${o.name}</p>
+<p>
+<b>Phone:</b> ${o.phone}
+<a href="tel:${o.phone}" style="margin-left:10px;color:green;">📞</a>
+</p>
+
+<p>
+<b>Address:</b> ${o.address}
+<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}" 
+target="_blank" style="margin-left:10px;color:blue;">
+📍
+</a>
+</p>
+
+<p><b>Total:</b> ₹${o.total}</p>
+<p><b>Payment:</b> ${o.payment || "-"}</p>
+<p><b>Date:</b> ${
+o.createdDate 
+? new Date(o.createdDate).toLocaleDateString("en-IN") 
+: "-"
+}</p>
+
+${o.cancelReason ? `
+<p style="color:red;"><b>Cancel Reason:</b> ${o.cancelReason}</p>
+` : ""}
+
+${o.return ? `
+<p style="color:orange;"><b>Return Reason:</b> ${o.return.reason}</p>
+<img src="${o.return.image}" width="80">
+` : ""}
+
+<p>
+<b>Status:</b> 
+<span class="status-${(o.status||"Processing").toLowerCase()}">
+${o.status || "Processing"}
+</span>
+</p>
+
+<select onchange="updateOrderStatus(${index}, this.value)">
+<option ${o.status==="Processing"?"selected":""}>Processing</option>
+<option ${o.status==="Shipped"?"selected":""}>Shipped</option>
+<option ${o.status==="Delivered"?"selected":""}>Delivered</option>
+<option ${o.status==="Cancelled"?"selected":""}>Cancelled</option>
+</select>
+
+<button class="delete" onclick="deleteOrder(${index})">Delete</button>
+
+</div>
+`
+})
+
+}
+
+/* BOOKINGS */
+
+function showBookings(){
+
+let content = document.getElementById("content")
+
+content.innerHTML="<h2>Machine Bookings</h2>"
+
+bookings.forEach((b,index)=>{
+
+content.innerHTML += `
+<div class="card">
+
+<p><b>Machine:</b> ${b.machine}</p>
+<p><b>Name:</b> ${b.name}</p>
+
+<p>
+<b>Phone:</b> ${b.phone}
+<a href="tel:${b.phone}" style="margin-left:10px;color:green;">📞</a>
+</p>
+
+<p><b>Booking Date:</b> ${b.bookingDate || "-"}</p>
+
+<p><b>Machine Date:</b> ${
+b.machineDate 
+? new Date(b.machineDate).toLocaleDateString("en-IN") 
+: "-"
+}</p>
+
+<p>
+<b>Address:</b> ${b.address || "-"}
+<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.address)}" 
+target="_blank" style="margin-left:10px;color:blue;">
+📍
+</a>
+</p>
+
+<p>
+<b>Status:</b> 
+<span class="status-${(b.status||"Booked").toLowerCase()}">
+${b.status || "Booked"}
+</span>
+</p>
+
+<select onchange="updateBookingStatus(${index}, this.value)">
+<option ${b.status==="Booked"?"selected":""}>Booked</option>
+<option ${b.status==="On the way"?"selected":""}>On the way</option>
+<option ${b.status==="Completed"?"selected":""}>Completed</option>
+<option ${b.status==="Cancelled"?"selected":""}>Cancelled</option>
+</select>
+
+<p><b>Payment:</b> ${b.payment || "-"}</p>
+
+<button class="delete" onclick="deleteBooking(${index})">Delete</button>
+
+</div>
+`
+})
+
+}
+
+/* ACTIONS */
+
+function acceptOrder(i){
+orders[i].status="Accepted"
+localStorage.setItem("orders",JSON.stringify(orders))
+location.reload()
+}
+
+function deleteOrder(i){
+if(confirm("Delete?")){
+orders.splice(i,1)
+localStorage.setItem("orders",JSON.stringify(orders))
+location.reload()
+}
+}
+
+function deleteBooking(i){
+if(confirm("Delete?")){
+bookings.splice(i,1)
+localStorage.setItem("machineBookings",JSON.stringify(bookings))
+location.reload()
+}
+}
+function updateOrderStatus(i,status){
+
+let orders = JSON.parse(localStorage.getItem("orders")) || []
+
+orders[i].status = status
+
+localStorage.setItem("orders", JSON.stringify(orders))
+
+location.reload()
+
+}
+
+function updateBookingStatus(i,status){
+
+let bookings = JSON.parse(localStorage.getItem("machineBookings")) || []
+
+bookings[i].status = status
+
+localStorage.setItem("machineBookings", JSON.stringify(bookings))
+
+location.reload()
+
+}
+
+loadStats()
+loadChart()
+
+</script>
+
+</body>
+</html> 

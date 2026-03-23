@@ -1,0 +1,141 @@
+body{
+  font-family:Poppins;
+  background:#eef2f7;
+  padding:20px;
+}
+
+/* HEADER */
+h1{
+  text-align:center;
+  font-size:32px;
+  color:#2e7d32;
+  margin-bottom:25px;
+  position:relative;
+}
+
+h1::after{
+  content:"";
+  width:80px;
+  height:4px;
+  background:#2e7d32;
+  display:block;
+  margin:10px auto 0;
+  border-radius:5px;
+}
+
+/* ================= DASHBOARD ================= */
+
+.stats-container{
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+/* CARDS */
+
+.stat-box{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  width:260px;
+  text-align:center;
+  box-shadow:0 5px 15px rgba(0,0,0,0.15);
+  transition:0.3s;
+}
+
+.stat-box:hover{
+  transform:translateY(-5px);
+}
+
+/* TEXT */
+
+.stat-box h3{
+  margin:8px 0;
+  color:#555;
+}
+
+.stat-box h2{
+  font-size:28px;
+  margin:5px 0;
+}
+
+/* COLORS */
+
+.blue{color:#2979ff;}
+.green{color:#00c853;}
+.orange{color:#ff9100;}
+
+/* ================= SECTION ================= */
+
+.section{
+  background:white;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ================= TABLE ================= */
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  background:#2e7d32;
+  color:white;
+  padding:12px;
+}
+
+td{
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #eee;
+}
+
+tr:nth-child(even){
+  background:#f9f9f9;
+}
+
+tr:hover{
+  background:#e8f5e9;
+}
+
+/* ================= BUTTONS ================= */
+
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.accept{
+  background:#2e7d32;
+  color:white;
+}
+
+.delete{
+  background:#e53935;
+  color:white;
+}
+
+button:hover{
+  opacity:0.85;
+}
+
+/* ================= STATUS ================= */
+
+.status-pending{
+  color:#fb8c00;
+  font-weight:bold;
+}
+
+.status-accepted{
+  color:#2e7d32;
+  font-weight:bold;
+}
