@@ -1,7 +1,7 @@
 /* ================= LOAD DATA ================= */
 
-let orders = JSON.parse(localStorage.getItem("orders")) || []
-let bookings = JSON.parse(localStorage.getItem("machineBookings")) || []
+let orders = []
+let bookings = []
 
 let today = new Date().toLocaleDateString("en-IN")
 
@@ -21,8 +21,6 @@ let bookingCancelRevenue = 0
 let bookingCancelCount = 0
 let rebookingCount = 0
 
-let orderTable = document.getElementById("ordersTable")
-let bookingTable = document.getElementById("bookingTable")
 
 /* ================= FORMAT MONEY ================= */
 
@@ -32,65 +30,65 @@ function formatMoney(val){
     })
 }
 
-/* ================= STATS CALCULATION ================= */
+async function loadServerData(){
 
-/* ORDERS */
+try{
+
+let res = await fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec")
+
+let data = await res.json()
+
+orders = data.orders ? data.orders.slice(1) : []
+bookings = data.bookings ? data.bookings.slice(1) : []
+
+console.log("Orders:", orders)
+console.log("Bookings:", bookings)
+
+recalculateAll()
+loadOrders(orders)
+loadBookings(bookings)
+
+}catch(err){
+console.error(err)
+}
+
+}
+function recalculateAll(){
+
+let totalOrders = orders.length
+let totalBookings = bookings.length
+
+// TEMP revenue (count based)
+let orderRevenue = orders.length
+let bookingRevenue = bookings.length
+
+let cancelCount = 0
+let bookingCancelCount = 0
+let returnCount = 0
+let rebookingCount = 0
+
 orders.forEach(o => {
-
-    let amount = Number(o.total || 0)
-
-    // TOTAL ORDER REVENUE
-    orderRevenue += amount
-
-    // TODAY REVENUE
-    let orderDate = o.createdDate 
-        ? new Date(o.createdDate).toLocaleDateString("en-IN") 
-        : ""
-
-    if(orderDate === today){
-        todayRevenue += amount
-    }
-
-    /* 🔴 CANCEL */
-    if(o.status === "Cancelled"){
-        cancelRevenue += amount
-        cancelCount++
-    }
-
-    /* 🔁 RETURN */
-    if(o.return){
-        returnRevenue += amount
-        returnCount++
-    }
-
+   if(o[7] === "Cancelled") cancelCount++
 })
 
-/* BOOKINGS */
 bookings.forEach(b => {
-
-    let amount = Number(b.total || 0)
-    bookingRevenue += amount
-
-    let bookingDate = b.createdDate 
-        ? new Date(b.createdDate).toLocaleDateString("en-IN") 
-        : ""
-
-    if(bookingDate === today){
-        todayRevenue += amount
-    }
-
-    /* 🔴 BOOKING CANCEL */
-    if(b.status === "Cancelled"){
-        bookingCancelRevenue += amount
-        bookingCancelCount++
-    }
-
-    /* 🔄 REBOOK */
-    if(b.status === "Rescheduled"){
-        rebookingCount++
-    }
-
+   if(b[5] === "Cancelled") bookingCancelCount++
+   if(b[5] === "Rescheduled") rebookingCount++
 })
+
+// UI update
+document.getElementById("totalOrders").innerText = totalOrders
+document.getElementById("totalBookings").innerText = totalBookings
+document.getElementById("cancelledOrders").innerText = cancelCount
+document.getElementById("cancelledBookings").innerText = bookingCancelCount
+document.getElementById("returnedOrders").innerText = returnCount
+document.getElementById("rebookings").innerText = rebookingCount
+
+document.getElementById("finalOrderRevenue").innerText = "₹" + orderRevenue
+document.getElementById("finalBookingRevenue").innerText = "₹" + bookingRevenue
+document.getElementById("finalRevenue").innerText = "₹" + (orderRevenue + bookingRevenue)
+
+}
 
 /* TOTAL */
 totalRevenue = orderRevenue + bookingRevenue
@@ -261,96 +259,8 @@ loadChart()
 
 /* ================= LOAD ORDERS ================= */
 
-function loadOrders(data){
-
-if(!orderTable) return
-
-orderTable.innerHTML = ""
-
-data.forEach((o,index)=>{
-
-let row = orderTable.insertRow()
-
-row.insertCell(0).innerText = o.orderID || "-"
-row.insertCell(1).innerText = o.name || "-"
-row.insertCell(2).innerText = o.phone || "-"
-row.insertCell(3).innerText = o.address || "-"
-row.insertCell(4).innerHTML = formatMoney(o.total)
-row.insertCell(5).innerText = o.payment || "-"
-
-let date = o.createdDate 
-? new Date(o.createdDate).toLocaleDateString("en-IN") 
-: "-"
-
-row.insertCell(6).innerText = date
-
-row.insertCell(7).innerHTML = 
-o.status === "Accepted"
-? "<span class='status-accepted'>Accepted</span>"
-: "<span class='status-pending'>Pending</span>"
-
-let action = row.insertCell(8)
-
-action.innerHTML = `
-
-<select onchange="updateOrderStatus(${index}, this.value)">
-<option ${(o.status==="Processing")?"selected":""}>Processing</option>
-<option ${(o.status==="Shipped")?"selected":""}>Shipped</option>
-<option ${(o.status==="Delivered")?"selected":""}>Delivered</option>
-<option ${(o.status==="Cancelled")?"selected":""}>Cancelled</option>
-</select>
-
-<button class="delete" onclick="deleteOrder(${index})">Delete</button>
-
-`
-})
-
-}
-
-loadOrders(orders)
 
 /* ================= BOOKINGS ================= */
-
-function loadBookings(){
-
-if(!bookingTable) return
-
-bookingTable.innerHTML = ""
-
-bookings.forEach((b,index)=>{
-
-let row = bookingTable.insertRow()
-
-row.insertCell(0).innerText = b.name || "-"
-row.insertCell(1).innerText = b.phone || "-"
-row.insertCell(2).innerText = b.machine || "-"
-
-let mDate = b.machineDate 
-? new Date(b.machineDate).toLocaleDateString("en-IN") 
-: "-"
-
-row.insertCell(3).innerText = b.bookingDate || "-"
-row.insertCell(4).innerText = mDate
-row.insertCell(5).innerText = b.slot || "-"
-row.insertCell(6).innerHTML = formatMoney(b.total)
-
-let action = row.insertCell(7)
-
-action.innerHTML = `
-
-<select onchange="updateBookingStatus(${index}, this.value)">
-<option ${(b.status==="Booked")?"selected":""}>Booked</option>
-<option ${(b.status==="On the way")?"selected":""}>On the way</option>
-<option ${(b.status==="Completed")?"selected":""}>Completed</option>
-<option ${(b.status==="Cancelled")?"selected":""}>Cancelled</option>
-</select>
-
-<button class="delete" onclick="deleteBooking(${index})">Delete</button>
-
-`
-})
-
-}
 
 loadBookings()
 function updateBookingStatus(i,status){
@@ -399,7 +309,26 @@ location.reload()
 }
 function updateOrderStatus(i,status){
 
-let orders = JSON.parse(localStorage.getItem("orders")) || []
+async function loadOrdersFromServer(){
+
+try{
+
+let res = await fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec")
+
+let data = await res.json()
+
+orders = data.slice(1)
+
+console.log("Admin orders:", orders)
+
+loadStatsUI()
+loadOrders(orders)
+
+}catch(err){
+console.error("Error loading orders", err)
+}
+
+}
 
 // 🔥 FIND USING ID (NOT INDEX)
 let orderID = orders[i].orderID
@@ -413,5 +342,96 @@ orders[realIndex].status = status
 localStorage.setItem("orders", JSON.stringify(orders))
 
 location.reload()
+
+}
+loadServerData()
+function loadOrders(orders){
+
+let container = document.getElementById("ordersContainer")
+container.innerHTML = "<h2>Orders</h2>"
+
+orders.forEach((o,i)=>{
+
+let html = `
+<div class="card">
+
+<b>ID:</b> AGR${1000+i}<br><br>
+
+<b>Name:</b> ${o[2]}<br><br>
+
+<b>Phone:</b> ${o[3]} 
+<a href="tel:${o[3]}">📞</a><br><br>
+
+<b>Address:</b> ${o[6]} 
+<a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${o[6]}">📍</a><br><br>
+
+<b>Total:</b> ₹${o[5] || 0}<br><br>
+
+<b>Payment:</b> COD<br><br>
+
+<b>Date:</b> ${o[0]}<br><br>
+
+<b>Status:</b> <span style="color:orange">Processing</span><br><br>
+
+<select>
+<option>Processing</option>
+<option>Shipped</option>
+<option>Delivered</option>
+<option>Cancelled</option>
+</select>
+
+<button class="delete" onclick="deleteOrder(${i})">Delete</button>
+
+</div>
+`
+
+container.innerHTML += html
+
+})
+
+}
+function loadOrders(orders){
+
+let container = document.getElementById("ordersContainer")
+container.innerHTML = "<h2>Orders</h2>"
+
+orders.forEach((o,i)=>{
+
+let html = `
+<div class="card">
+
+<b>ID:</b> AGR${1000+i}<br><br>
+
+<b>Name:</b> ${o[2]}<br><br>
+
+<b>Phone:</b> ${o[3]} 
+<a href="tel:${o[3]}">📞</a><br><br>
+
+<b>Address:</b> ${o[6]} 
+<a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${o[6]}">📍</a><br><br>
+
+<b>Total:</b> ₹${o[5] || 0}<br><br>
+
+<b>Payment:</b> COD<br><br>
+
+<b>Date:</b> ${o[0]}<br><br>
+
+<b>Status:</b> <span style="color:orange">Processing</span><br><br>
+
+<select>
+<option>Processing</option>
+<option>Shipped</option>
+<option>Delivered</option>
+<option>Cancelled</option>
+</select>
+
+<button class="delete" onclick="deleteOrder(${i})">Delete</button>
+
+</div>
+`
+
+container.innerHTML += html
+
+})
 
 }

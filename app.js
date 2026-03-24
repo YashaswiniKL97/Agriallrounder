@@ -969,7 +969,7 @@ status:"Processing"
 }
 
 orders.push(order)
-
+order.type = "order"
 fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec",{
 method:"POST",
 body:JSON.stringify(order)
@@ -1561,7 +1561,7 @@ status:"Booked"
 bookings.push(booking)
 /* GOOGLE SHEET AUTOMATION */
 
-fetch("https://script.google.com/macros/s/AKfycbyRrSc3mdjSHUvlP4OvxLy4psq2K4ixJHgp8FQClUTQGqYScY0TnqT--cazceGxduuctg/exec",{
+fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
