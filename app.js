@@ -87,12 +87,12 @@ cod:"Cash on Delivery",
 upi:"Pay via UPI",
 
 waOrder:"Order on WhatsApp",
-waBook:"Book Machine on WhatsApp",
+waBook:"Book via WhatsApp",
 
 orderForm:"Order via Google Form",
 bookingForm:"Book Machine via Google Form",
 formTitle:"Order & Booking via Google Form",
-waBookFull:"Book Machine via WhatsApp",
+waBookFull:"Book via WhatsApp",
 
 Seeds:"Seeds",
 Fertilizers:"Fertilizers",
@@ -180,8 +180,8 @@ cod:"ಡಿಲಿವರಿ ಸಮಯದಲ್ಲಿ ಪಾವತಿ",
 upi:"UPI ಮೂಲಕ ಪಾವತಿ",
 
 waOrder:"WhatsApp ಮೂಲಕ ಆರ್ಡರ್ ಮಾಡಿ",
-waBook:"WhatsApp ಮೂಲಕ ಯಂತ್ರ ಬುಕ್ ಮಾಡಿ",
-waBookFull:"WhatsApp ಮೂಲಕ ಯಂತ್ರ ಬುಕ್ ಮಾಡಿ",
+waBook:"WhatsApp ಮೂಲಕ ಬುಕ್ ಮಾಡಿ",
+waBookFull:"WhatsApp ಮೂಲಕ ಬುಕ್ ಮಾಡಿ",
 
 orderForm:"Google Form ಮೂಲಕ ಆರ್ಡರ್ ಮಾಡಿ",
 bookingForm:"Google Form ಮೂಲಕ ಯಂತ್ರ ಬುಕ್ ಮಾಡಿ",
@@ -272,8 +272,8 @@ cod:"डिलीवरी पर भुगतान",
 upi:"UPI से भुगतान",
 
 waOrder:"WhatsApp पर ऑर्डर करें",
-waBook:"WhatsApp पर मशीन बुक करें",
-waBookFull:"WhatsApp से मशीन बुक करें",
+waBook:"WhatsApp पर बुक करें",
+waBookFull:"WhatsApp से बुक करें",
 
 orderForm:"Google Form से ऑर्डर करें",
 bookingForm:"Google Form से मशीन बुक करें",
@@ -370,8 +370,8 @@ cod:"டெலிவரியில் கட்டணம்",
 upi:"UPI மூலம் செலுத்து",
 
 waOrder:"WhatsApp மூலம் ஆர்டர் செய்யவும்",
-waBook:"WhatsApp மூலம் யந்திரம் பதிவு செய்",
-waBookFull:"WhatsApp மூலம் இயந்திரம் பதிவு செய்",
+waBook:"WhatsApp மூலம் பதிவு செய்யவும்",
+waBookFull:"WhatsApp மூலம் பதிவு செய்யவும்",
 
 orderForm:"Google Form மூலம் ஆர்டர் செய்யவும்",
 bookingForm:"Google Form மூலம் இயந்திரம் பதிவு செய்",
@@ -387,9 +387,9 @@ Machines:"யந்திரங்கள்"
 te:{
 remove:"తొలగించు",
 proceed:"ఆర్డర్ చేయండి",
-feedTitle:"விவசாயர் பீட்",
-postPlaceholder:"உங்கள் விவசாய யோசனையை பகிரவும்...",
-postBtn:"போஸ்ட் செய்யவும்",
+feedTitle: "రైతు ఫీడ్",
+postPlaceholder: "మీ వ్యవసాయ పోస్టును పంచుకోండి...",
+postBtn: "పోస్ట్ చేయండి",
 cancelPrompt:"ఈ ఆర్డర్‌ను ఎందుకు రద్దు చేస్తున్నారు?",
 confirmCancel:"రద్దు చేయాలా?",
 enterReason:"కారణం నమోదు చేయండి...",
@@ -473,8 +473,8 @@ cod:"డెలివరీ సమయంలో చెల్లించండి"
 upi:"UPI ద్వారా చెల్లించండి",
 
 waOrder:"WhatsApp ద్వారా ఆర్డర్ చేయండి",
-waBook:"WhatsApp ద్వారా మెషిన్ బుక్ చేయండి",
-waBookFull:"WhatsApp ద్వారా మెషిన్ బుక్ చేయండి",
+waBook:"WhatsApp ద్వారా బుక్ చేయండి",
+waBookFull:"WhatsApp ద్వారా బుక్ చేయండి",
 
 orderForm:"Google Form ద్వారా ఆర్డర్ చేయండి",
 bookingForm:"Google Form ద్వారా మెషిన్ బుక్ చేయండి",
@@ -506,7 +506,7 @@ const PARCEL_CHARGE = 40
 let cart=[]
 let selected=[]
 
-let orders=JSON.parse(localStorage.getItem("orders"))||[]
+let orders=[]
 let bookings=JSON.parse(localStorage.getItem("machineBookings"))||[]
 let orderCounter = localStorage.getItem("orderCounter") || 1001
 
@@ -970,7 +970,7 @@ status:"Processing"
 
 orders.push(order)
 
-fetch("https://script.google.com/macros/s/AKfycbyRrSc3mdjSHUvlP4OvxLy4psq2K4ixJHgp8FQClUTQGqYScY0TnqT--cazceGxduuctg/exec",{
+fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec",{
 method:"POST",
 body:JSON.stringify(order)
 })
@@ -2175,11 +2175,6 @@ openProfile()
 }
 
 }
-if(localStorage.getItem("farmerUser")){
-homePage()
-}else{
-homePage()   // normal homepage
-}
 document.addEventListener("change",function(e){
 
 if(e.target.id==="postImage"){
@@ -2210,7 +2205,27 @@ reader.readAsDataURL(file)
 }
 
 })
+loadOrdersFromServer()
+async function loadOrdersFromServer(){
 
+try{
+
+let res = await fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec")
+
+let data = await res.json()
+
+orders = data
+
+console.log("Orders loaded:", orders)
+
+}catch(err){
+console.error("Error loading orders", err)
+}
+
+}
+
+loadOrdersFromServer()
+homePage()
 
 
 

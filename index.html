@@ -23,6 +23,9 @@
 
 <h2 class="logo" onclick="homePage()">Agriallrounder</h2>
 
+</div> <!-- ✅ CLOSE TOPBAR HERE -->
+
+<!-- ✅ NOW ADD BELOW -->
 <div class="top-actions">
 
 <button id="orderBtn" onclick="openOrderHistory()">📦 Order History</button>
@@ -33,11 +36,9 @@
 
 <button id="adminBtn" onclick="adminLogin()">⚙ Admin</button>
 
-</div>
-
-<div class="cart-icon" onclick="openCart()">
+<button onclick="openCart()" class="cart-btn">
 🛒 <span id="cartCount">0</span>
-</div>
+</button>
 
 </div>
 
@@ -45,16 +46,10 @@
 
 <div class="search-container">
 
-<div style="text-align:center;margin:20px;">
-
-<button onclick="openFeed()" 
-style="padding:12px 25px;background:#2e7d32;color:white;border:none;border-radius:8px;font-size:16px;">
+<button onclick="openFeed()" class="feed-btn">
 🌾 Open Farmer Feed
 </button>
 
-</div>
-
-<!-- ❌ placeholder remove madidini -->
 <input type="text" id="searchBox">
 
 </div>
