@@ -1,437 +1,364 @@
-/* ================= LOAD DATA ================= */
+const API_URL = "https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec"
+
+/* ================= GLOBAL ================= */
 
 let orders = []
 let bookings = []
 
-let today = new Date().toLocaleDateString("en-IN")
+let statsData = {}
 
-let todayRevenue = 0
-let totalRevenue = 0
-let orderRevenue = 0
-let bookingRevenue = 0
-
-/* 🔥 NEW VARIABLES */
-let cancelRevenue = 0
-let returnRevenue = 0
-let cancelCount = 0
-let returnCount = 0
-
-/* 🔥 BOOKING TRACK */
-let bookingCancelRevenue = 0
-let bookingCancelCount = 0
-let rebookingCount = 0
-
-
-/* ================= FORMAT MONEY ================= */
+/* ================= FORMAT ================= */
 
 function formatMoney(val){
-    return "\u20B9 " + Number(val || 0).toLocaleString("en-IN", {
-        minimumFractionDigits: 2
-    })
+  return "₹ " + Number(val || 0).toLocaleString("en-IN")
 }
+
+function formatDate(d){
+  if(!d) return "N/A"
+  return new Date(d).toLocaleString("en-IN")
+}
+
+/* ================= LOAD DATA ================= */
 
 async function loadServerData(){
+  try{
 
-try{
+    let res = await fetch(API_URL)
+    let data = await res.json()
 
-let res = await fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec")
+    console.log("RAW DATA:", data)
 
-let data = await res.json()
+    orders = []
+    bookings = []
 
-orders = data.orders ? data.orders.slice(1) : []
-bookings = data.bookings ? data.bookings.slice(1) : []
+    data.forEach(d => {
 
-console.log("Orders:", orders)
-console.log("Bookings:", bookings)
+      if(d.type === "order"){
+        orders.push({
+        orderID: d.orderID,
+        name: d.name,
+        phone: d.phone,
+        address: d.address,
+        total: d.total,
+        payment: d.payment || "COD",
+        status: d.status || "Processing",
+        reason: d.reason || "",
+        image: d.image || "",
+        createdDate: d.createdDate
+      })
+      }
 
-recalculateAll()
-loadOrders(orders)
-loadBookings(bookings)
-
-}catch(err){
-console.error(err)
+     if(d.type === "booking"){
+    bookings.push({
+    name: d.name,
+    phone: d.phone,
+    address: d.address,
+    total: d.total,
+    payment: d.payment || "COD",
+    machine: d.machine,
+    machineDate: d.machineDate,
+    slot: d.slot,
+    status: d.status || "Booked",
+    cancelReason: d.reason || "",
+    createdDate: d.createdDate
+  })
 }
 
-}
-function recalculateAll(){
+    })
 
-let totalOrders = orders.length
-let totalBookings = bookings.length
+    calculateStats()
+    loadStatsUI()
+    loadChart()
+    loadOrders(orders)
+    loadBookings(bookings)
 
-// TEMP revenue (count based)
-let orderRevenue = orders.length
-let bookingRevenue = bookings.length
-
-let cancelCount = 0
-let bookingCancelCount = 0
-let returnCount = 0
-let rebookingCount = 0
-
-orders.forEach(o => {
-   if(o[7] === "Cancelled") cancelCount++
-})
-
-bookings.forEach(b => {
-   if(b[5] === "Cancelled") bookingCancelCount++
-   if(b[5] === "Rescheduled") rebookingCount++
-})
-
-// UI update
-document.getElementById("totalOrders").innerText = totalOrders
-document.getElementById("totalBookings").innerText = totalBookings
-document.getElementById("cancelledOrders").innerText = cancelCount
-document.getElementById("cancelledBookings").innerText = bookingCancelCount
-document.getElementById("returnedOrders").innerText = returnCount
-document.getElementById("rebookings").innerText = rebookingCount
-
-document.getElementById("finalOrderRevenue").innerText = "₹" + orderRevenue
-document.getElementById("finalBookingRevenue").innerText = "₹" + bookingRevenue
-document.getElementById("finalRevenue").innerText = "₹" + (orderRevenue + bookingRevenue)
-
+  }catch(err){
+    console.error("Server error:", err)
+  }
 }
 
-/* TOTAL */
-totalRevenue = orderRevenue + bookingRevenue
+/* ================= CALCULATE ================= */
 
-/* 💰 FINAL REVENUE */
+function calculateStats(){
 
-let finalOrderRevenue = orderRevenue - cancelRevenue - returnRevenue
-let finalBookingRevenue = bookingRevenue - bookingCancelRevenue
+  let cancelledOrders = 0
+  let returnedOrders = 0
+  let orderRevenue = 0
 
-let finalRevenue = finalOrderRevenue + finalBookingRevenue
+  let cancelledBookings = 0
+  let rebookings = 0
+  let bookingRevenue = 0
 
-/* ================= MONTHLY ================= */
+  orders.forEach(o=>{
+    if(o.status === "Cancelled") cancelledOrders++
+    else if(o.status === "Returned") returnedOrders++
+    else orderRevenue += Number(o.total || 0)
+  })
 
-let currentMonth = new Date().getMonth()
-let currentYear = new Date().getFullYear()
+  bookings.forEach(b=>{
+    if(b.status === "Cancelled") cancelledBookings++
+    else if(b.status === "Rebooked") rebookings++
+    else bookingRevenue += Number(b.total || 0)
+  })
 
-let monthlyOrder = 0
-let monthlyBooking = 0
+  statsData = {
+    totalOrders: orders.length,
+    cancelledOrders,
+    returnedOrders,
+    orderRevenue,
 
-orders.forEach(o=>{
-    let d = new Date(o.createdDate)
-    if(d.getMonth()===currentMonth && d.getFullYear()===currentYear){
-        monthlyOrder += Number(o.total || 0)
-    }
-})
+    totalBookings: bookings.length,
+    cancelledBookings,
+    rebookings,
+    bookingRevenue,
 
-bookings.forEach(b=>{
-    let d = new Date(b.createdDate)
-    if(d.getMonth()===currentMonth && d.getFullYear()===currentYear){
-        monthlyBooking += Number(b.total || 0)
-    }
-})
+    finalRevenue: orderRevenue + bookingRevenue
+  }
+}
 
-let monthlyTotal = monthlyOrder + monthlyBooking
-
-/* ================= UI ================= */
+/* ================= STATS UI ================= */
 
 function loadStatsUI(){
 
-let stats = document.getElementById("stats")
-if(!stats) return
+  let s = statsData
 
-stats.innerHTML = `
+  document.getElementById("stats").innerHTML = `
+  <div class="stats-container">
 
-<div class="stats-container">
+    <div class="stat-box"><h3>Total Orders</h3><h2>${s.totalOrders}</h2></div>
+    <div class="stat-box"><h3>Cancelled Orders</h3><h2 class="red">${s.cancelledOrders}</h2></div>
+    <div class="stat-box"><h3>Returned Orders</h3><h2 class="red">${s.returnedOrders}</h2></div>
+    <div class="stat-box"><h3>Order Revenue</h3><h2 class="green">₹${s.orderRevenue}</h2></div>
 
-<div class="stat-box">
-<h3>Total Orders</h3>
-<h2 class="blue">${orders.length}</h2>
-</div>
+    <div class="stat-box"><h3>Total Bookings</h3><h2>${s.totalBookings}</h2></div>
+    <div class="stat-box"><h3>Cancelled Bookings</h3><h2 class="red">${s.cancelledBookings}</h2></div>
+    <div class="stat-box"><h3>Rebookings</h3><h2>${s.rebookings}</h2></div>
+    <div class="stat-box"><h3>Booking Revenue</h3><h2 class="green">₹${s.bookingRevenue}</h2></div>
 
-<div class="stat-box">
-<h3>Total Bookings</h3>
-<h2 class="orange">${bookings.length}</h2>
-</div>
+    <div class="stat-box"><h3>Final Revenue</h3><h2 class="blue">₹${s.finalRevenue}</h2></div>
 
-<div class="stat-box">
-<h3>Order Revenue</h3>
-<h2 class="blue">${formatMoney(orderRevenue)}</h2>
-</div>
-
-<div class="stat-box">
-<h3>Booking Revenue</h3>
-<h2 class="orange">${formatMoney(bookingRevenue)}</h2>
-</div>
-
-<div class="stat-box">
-<h3>Total Revenue</h3>
-<h2 class="green">${formatMoney(totalRevenue)}</h2>
-</div>
-
-<div class="stat-box">
-<h3>Final Order Revenue</h3>
-<h2 class="green">${formatMoney(finalOrderRevenue)}</h2>
-</div>
-
-<div class="stat-box">
-<h3>Cancelled Bookings</h3>
-<h2 style="color:red">${bookingCancelCount}</h2>
-<p>Loss: ${formatMoney(bookingCancelRevenue)}</p>
-</div>
-
-<div class="stat-box">
-<h3>Rebookings</h3>
-<h2 style="color:blue">${rebookingCount}</h2>
-</div>
-
-<div class="stat-box">
-<h3>Final Booking Revenue</h3>
-<h2 class="green">${formatMoney(finalBookingRevenue)}</h2>
-</div>
-
-<!-- CANCEL -->
-<div class="stat-box">
-<h3>Cancelled Orders</h3>
-<h2 style="color:red">${cancelCount}</h2>
-<p>Loss: ${formatMoney(cancelRevenue)}</p>
-</div>
-
-<!-- RETURN -->
-<div class="stat-box">
-<h3>Returned Orders</h3>
-<h2 style="color:orange">${returnCount}</h2>
-<p>Loss: ${formatMoney(returnRevenue)}</p>
-</div>
-
-<!-- FINAL -->
-<div class="stat-box">
-<h3>Final Revenue</h3>
-<h2 class="green">${formatMoney(finalRevenue)}</h2>
-</div>
-
-<div class="stat-box">
-<h3>This Month</h3>
-<h2 class="green">${formatMoney(monthlyTotal)}</h2>
-<p>Orders: ${formatMoney(monthlyOrder)}</p>
-<p>Bookings: ${formatMoney(monthlyBooking)}</p>
-</div>
-
-</div>
-
-`
+  </div>
+  `
 }
-
-loadStatsUI()
 
 /* ================= CHART ================= */
 
+let revenueChart = null   // 🔥 ADD THIS TOP OF FILE
+
 function loadChart(){
 
-let orderMap = {}
-let bookingMap = {}
+  let ctx = document.getElementById("revenueChart")
+  if(!ctx) return
 
-orders.forEach(o=>{
-let d = new Date(o.createdDate).toLocaleDateString("en-IN")
-orderMap[d] = (orderMap[d] || 0) + Number(o.total || 0)
-})
+  let s = statsData
 
-bookings.forEach(b=>{
-let d = new Date(b.createdDate).toLocaleDateString("en-IN")
-bookingMap[d] = (bookingMap[d] || 0) + Number(b.total || 0)
-})
+  // 🔥 DESTROY OLD CHART
+  if(revenueChart){
+    revenueChart.destroy()
+  }
 
-let labels = [...new Set([
-...Object.keys(orderMap),
-...Object.keys(bookingMap)
-])]
-
-let orderData = labels.map(d => orderMap[d] || 0)
-let bookingData = labels.map(d => bookingMap[d] || 0)
-
-if(document.getElementById("revenueChart")){
-new Chart(document.getElementById("revenueChart"),{
-type:'line',
-data:{
-labels:labels,
-datasets:[
-{ label:'Orders Revenue', data:orderData, borderWidth:2 },
-{ label:'Bookings Revenue', data:bookingData, borderWidth:2 }
-]
-}
-})
+  revenueChart = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:["Orders","Bookings","Total"],
+      datasets:[{
+        label:'Revenue',
+        data:[s.orderRevenue, s.bookingRevenue, s.finalRevenue]
+      }]
+    }
+  })
 }
 
+/* ================= ORDERS ================= */
+
+function loadOrders(data){
+
+  let html = "<h2>📦 Orders</h2>"
+
+  data.forEach((o,i)=>{
+
+    html += `
+    <div class="card">
+
+      <b>Name:</b> ${o.name}<br>
+
+      <b>Phone:</b> 
+      <a href="tel:${o.phone}">📞 ${o.phone}</a><br>
+
+      <b>Address:</b> 
+      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}" target="_blank">
+        📍 ${o.address}
+      </a><br>
+
+      <b>Price:</b> ₹${o.total}<br>
+      ${o.reason ? `<br><b>Reason:</b> ${o.reason}` : ""}
+      <b>Payment:</b> ${o.payment}<br>
+      <b>Date:</b> ${formatDate(o.createdDate)}<br>
+
+      <b>Status:</b>
+      ${o.reason ? `<br><b>Reason:</b> ${o.reason}` : ""}
+      <select onchange="updateOrderStatus(${i}, this.value)">
+        <option ${o.status==="Processing"?"selected":""}>Processing</option>
+        <option ${o.status==="Cancelled"?"selected":""}>Cancelled</option>
+        <option ${o.status==="Returned"?"selected":""}>Returned</option>
+        <option ${o.status==="Delivered"?"selected":""}>Delivered</option>
+      </select><br>
+      ${o.image ? `<br><img src="${o.image}" width="120">` : ""}
+
+      <div id="orderExtra${i}"></div>
+
+      <button onclick="showOrderExtra(${i})">Add Reason</button>
+      <button class="delete" onclick="deleteOrder(${i})">Delete</button>
+
+    </div>
+    `
+  })
+
+  document.getElementById("ordersContainer").innerHTML = html
+  document.getElementById("bookingsContainer").innerHTML = ""
 }
-
-loadChart()
-
-/* ================= LOAD ORDERS ================= */
-
 
 /* ================= BOOKINGS ================= */
 
-loadBookings()
+function loadBookings(data){
+
+  let html = "<h2>🚜 Bookings</h2>"
+
+  data.forEach((b,i)=>{
+
+    html += `
+    <div class="card">
+
+      <b>Name:</b> ${b.name}<br>
+
+      <b>Phone:</b> 
+      <a href="tel:${b.phone}">📞 ${b.phone}</a><br>
+
+      <b>Address:</b> 
+      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.address)}" target="_blank">
+        📍 ${b.address}
+      </a><br>
+
+      <b>Machine:</b> ${b.machine}<br>
+      <b>Machine Date:</b> ${b.machineDate}<br>
+      <b>Slot:</b> ${b.slot}<br>
+
+      <b>Price:</b> ₹${b.total}<br>
+      <b>Payment:</b> ${b.payment}<br>
+
+      <b>Status:</b>
+      ${b.cancelReason ? `<br><b>Reason:</b> ${b.cancelReason}` : ""}
+      ${b.status==="Rebooked" ? `<p style="color:orange;"><b>Rebooked Slot:</b> ${b.machineDate} | ${b.slot}</p>` : ""}
+      <select onchange="updateBookingStatus(${i}, this.value)">
+        <option ${b.status==="Booked"?"selected":""}>Booked</option>
+        <option ${b.status==="Cancelled"?"selected":""}>Cancelled</option>
+        <option ${b.status==="Completed"?"selected":""}>Completed</option>
+        <option ${b.status==="Rebooked"?"selected":""}>Rebooked</option>
+      </select><br>
+
+    
+
+      <div id="bookingExtra${i}"></div>
+
+      <button onclick="showBookingExtra(${i})">Add Reason</button>
+      <button class="delete" onclick="deleteBooking(${i})">Delete</button>
+
+    </div>
+    `
+  })
+
+  document.getElementById("bookingsContainer").innerHTML = html
+  document.getElementById("ordersContainer").innerHTML = ""
+}
+
+/* ================= STATUS ================= */
+
+function updateOrderStatus(i,status){
+  orders[i].status = status
+  fetch(API_URL + 
+    "?action=updateOrder" +
+    "&orderID=" + orders[i].orderID +
+    "&status=" + status
+  )
+  calculateStats()
+  loadStatsUI()
+}
+
 function updateBookingStatus(i,status){
 
-let bookings = JSON.parse(localStorage.getItem("machineBookings")) || []
+  bookings[i].status = status
 
-let machine = bookings[i].machine
-let createdDate = bookings[i].createdDate
+  // 🔥 SERVER UPDATE
+  fetch(API_URL +
+    "?action=updateBooking" +
+    "&phone=" + bookings[i].phone +
+    "&status=" + status
+  )
 
-let realIndex = bookings.findIndex(b => 
-b.machine === machine && b.createdDate === createdDate
-)
-
-if(realIndex !== -1){
-bookings[realIndex].status = status
+  calculateStats()
+  loadStatsUI()
 }
 
-localStorage.setItem("machineBookings", JSON.stringify(bookings))
+/* ================= EXTRA ================= */
 
-location.reload()
-
+function showOrderExtra(i){
+  document.getElementById("orderExtra"+i).innerHTML = `
+    <textarea id="reason${i}" placeholder="Reason"></textarea><br>
+    <input type="file" id="img${i}"><br>
+    <button onclick="saveOrderExtra(${i})">Save</button>
+  `
 }
 
-/* ================= ACTIONS ================= */
+function saveOrderExtra(i){
 
-function acceptOrder(i){
-orders[i].status = "Accepted"
-localStorage.setItem("orders", JSON.stringify(orders))
-location.reload()
+  let reason = document.getElementById("reason"+i).value
+  let img = document.getElementById("img"+i).files[0]
+
+  orders[i].reason = reason
+
+  // 🔥 SERVER UPDATE
+  fetch(API_URL +
+    "?action=updateOrder" +
+    "&orderID=" + orders[i].orderID +
+    "&reason=" + encodeURIComponent(reason)
+  )
+
+  if(img){
+    orders[i].image = URL.createObjectURL(img)
+  }
+
+  alert("Saved")
 }
 
-function deleteOrder(i){
-if(confirm("Delete this order?")){
-orders.splice(i,1)
-localStorage.setItem("orders", JSON.stringify(orders))
-location.reload()
-}
-}
-
-function deleteBooking(i){
-if(confirm("Delete booking?")){
-bookings.splice(i,1)
-localStorage.setItem("machineBookings", JSON.stringify(bookings))
-location.reload()
-}
-}
-function updateOrderStatus(i,status){
-
-async function loadOrdersFromServer(){
-
-try{
-
-let res = await fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec")
-
-let data = await res.json()
-
-orders = data.slice(1)
-
-console.log("Admin orders:", orders)
-
-loadStatsUI()
-loadOrders(orders)
-
-}catch(err){
-console.error("Error loading orders", err)
+function showBookingExtra(i){
+  document.getElementById("bookingExtra"+i).innerHTML = `
+    <textarea id="breason${i}" placeholder="Reason"></textarea><br>
+    <button onclick="saveBookingExtra(${i})">Save</button>
+  `
 }
 
+function saveBookingExtra(i){
+  let reason = document.getElementById("breason"+i).value
+  bookings[i].reason = reason
+  alert("Saved")
 }
 
-// 🔥 FIND USING ID (NOT INDEX)
-let orderID = orders[i].orderID
+/* ================= DELETE ================= */
 
-let realIndex = orders.findIndex(o => o.orderID === orderID)
-
-if(realIndex !== -1){
-orders[realIndex].status = status
+function deleteOrder(index){
+  if(confirm("Delete this order?")){
+    orders.splice(index,1)
+    loadOrders(orders)
+    calculateStats()
+    loadStatsUI()
+  }
 }
 
-localStorage.setItem("orders", JSON.stringify(orders))
-
-location.reload()
-
-}
-loadServerData()
-function loadOrders(orders){
-
-let container = document.getElementById("ordersContainer")
-container.innerHTML = "<h2>Orders</h2>"
-
-orders.forEach((o,i)=>{
-
-let html = `
-<div class="card">
-
-<b>ID:</b> AGR${1000+i}<br><br>
-
-<b>Name:</b> ${o[2]}<br><br>
-
-<b>Phone:</b> ${o[3]} 
-<a href="tel:${o[3]}">📞</a><br><br>
-
-<b>Address:</b> ${o[6]} 
-<a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${o[6]}">📍</a><br><br>
-
-<b>Total:</b> ₹${o[5] || 0}<br><br>
-
-<b>Payment:</b> COD<br><br>
-
-<b>Date:</b> ${o[0]}<br><br>
-
-<b>Status:</b> <span style="color:orange">Processing</span><br><br>
-
-<select>
-<option>Processing</option>
-<option>Shipped</option>
-<option>Delivered</option>
-<option>Cancelled</option>
-</select>
-
-<button class="delete" onclick="deleteOrder(${i})">Delete</button>
-
-</div>
-`
-
-container.innerHTML += html
-
-})
-
-}
-function loadOrders(orders){
-
-let container = document.getElementById("ordersContainer")
-container.innerHTML = "<h2>Orders</h2>"
-
-orders.forEach((o,i)=>{
-
-let html = `
-<div class="card">
-
-<b>ID:</b> AGR${1000+i}<br><br>
-
-<b>Name:</b> ${o[2]}<br><br>
-
-<b>Phone:</b> ${o[3]} 
-<a href="tel:${o[3]}">📞</a><br><br>
-
-<b>Address:</b> ${o[6]} 
-<a target="_blank" href="https://www.google.com/maps/search/?api=1&query=${o[6]}">📍</a><br><br>
-
-<b>Total:</b> ₹${o[5] || 0}<br><br>
-
-<b>Payment:</b> COD<br><br>
-
-<b>Date:</b> ${o[0]}<br><br>
-
-<b>Status:</b> <span style="color:orange">Processing</span><br><br>
-
-<select>
-<option>Processing</option>
-<option>Shipped</option>
-<option>Delivered</option>
-<option>Cancelled</option>
-</select>
-
-<button class="delete" onclick="deleteOrder(${i})">Delete</button>
-
-</div>
-`
-
-container.innerHTML += html
-
-})
-
+function deleteBooking(index){
+  if(confirm("Delete this booking?")){
+    bookings.splice(index,1)
+    loadBookings(bookings)
+    calculateStats()
+    loadStatsUI()
+  }
 }

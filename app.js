@@ -1,4 +1,6 @@
 const app=document.getElementById("app")
+// SERVER API
+const API_URL = "https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec"
 
 let lang = localStorage.getItem("lang") || "en"
 
@@ -85,6 +87,8 @@ machinePrice:"Machine Price",
 total:"Total",
 cod:"Cash on Delivery",
 upi:"Pay via UPI",
+instructions:"Note: Delivery, GST and parcel charges are included. You can cancel within 3 hours without deduction. After 3 hours, 20% will be deducted.",
+agree:"I agree to terms",
 
 waOrder:"Order on WhatsApp",
 waBook:"Book via WhatsApp",
@@ -178,6 +182,8 @@ machinePrice:"ಯಂತ್ರ ಬೆಲೆ",
 total:"ಒಟ್ಟು",
 cod:"ಡಿಲಿವರಿ ಸಮಯದಲ್ಲಿ ಪಾವತಿ",
 upi:"UPI ಮೂಲಕ ಪಾವತಿ",
+instructions:"ಗಮನಿಸಿ: ಡೆಲಿವರಿ, ಜಿಎಸ್‌ಟಿ ಮತ್ತು ಪಾರ್ಸೆಲ್ ಶುಲ್ಕ ಒಳಗೊಂಡಿದೆ. 3 ಗಂಟೆಯೊಳಗೆ ರದ್ದು ಮಾಡಿದರೆ ಯಾವುದೇ ಹಣ ಕಡಿತವಾಗುವುದಿಲ್ಲ. 3 ಗಂಟೆಯ ನಂತರ ಒಟ್ಟು ಮೊತ್ತದ 20% ಕಡಿತವಾಗುತ್ತದೆ.",
+agree:"ನಾನು ನಿಯಮಗಳನ್ನು ಒಪ್ಪುತ್ತೇನೆ",
 
 waOrder:"WhatsApp ಮೂಲಕ ಆರ್ಡರ್ ಮಾಡಿ",
 waBook:"WhatsApp ಮೂಲಕ ಬುಕ್ ಮಾಡಿ",
@@ -270,6 +276,8 @@ machinePrice:"मशीन कीमत",
 total:"कुल",
 cod:"डिलीवरी पर भुगतान",
 upi:"UPI से भुगतान",
+instructions:"नोट: डिलीवरी, GST और पार्सल शुल्क शामिल हैं। 3 घंटे के अंदर कैंसल करने पर कोई कटौती नहीं होगी। 3 घंटे के बाद 20% कटौती होगी।",
+agree:"मैं नियमों से सहमत हूं",
 
 waOrder:"WhatsApp पर ऑर्डर करें",
 waBook:"WhatsApp पर बुक करें",
@@ -368,6 +376,8 @@ machinePrice:"விலை",
 total:"மொத்தம்",
 cod:"டெலிவரியில் கட்டணம்",
 upi:"UPI மூலம் செலுத்து",
+instructions:"குறிப்பு: டெலிவரி, GST மற்றும் பார்சல் கட்டணம் சேர்க்கப்பட்டுள்ளது. 3 மணி நேரத்திற்குள் ரத்து செய்தால் எந்த தொகையும் கழிக்கப்படாது. 3 மணி நேரத்திற்கு பிறகு 20% கழிக்கப்படும்.",
+agree:"நான் விதிமுறைகளை ஏற்கிறேன்",
 
 waOrder:"WhatsApp மூலம் ஆர்டர் செய்யவும்",
 waBook:"WhatsApp மூலம் பதிவு செய்யவும்",
@@ -471,6 +481,8 @@ machinePrice:"ధర",
 total:"మొత్తం",
 cod:"డెలివరీ సమయంలో చెల్లించండి",
 upi:"UPI ద్వారా చెల్లించండి",
+instructions:"గమనిక: డెలివరీ, GST మరియు పార్సెల్ ఛార్జీలు కలిపి ఉన్నాయి. 3 గంటలలోపు రద్దు చేస్తే ఎటువంటి డెడక్షన్ ఉండదు. 3 గంటల తర్వాత 20% తగ్గింపు ఉంటుంది.",
+agree:"నేను నిబంధనలను అంగీకరిస్తున్నాను",
 
 waOrder:"WhatsApp ద్వారా ఆర్డర్ చేయండి",
 waBook:"WhatsApp ద్వారా బుక్ చేయండి",
@@ -507,8 +519,8 @@ let cart=[]
 let selected=[]
 
 let orders=[]
-let bookings=JSON.parse(localStorage.getItem("machineBookings"))||[]
-let orderCounter = localStorage.getItem("orderCounter") || 1001
+let bookings = []
+let orderCounter = 1001
 
 /* QR IMAGE */
 
@@ -828,6 +840,15 @@ form.innerHTML=`
 
 <h3>${t.machinePrice} : ₹ ${machine.price}</h3>
 <h2>${t.total} : ₹ ${total}</h2>
+<p style="color:#555;font-size:13px;">⚠ ${t.instructions}</p>
+
+<label style="display:flex;align-items:center;margin-top:10px;">
+<input type="checkbox" id="agreeTerms" style="margin-right:8px;">
+${t.agree}
+</label>
+<p style="color:#555;font-size:13px;margin-top:10px;">
+⚠ ${t.instructions}
+</p>
 
 <button onclick="confirmBooking('${machine.name}',${total},'COD')">${t.cod}</button>
 
@@ -934,6 +955,15 @@ form.innerHTML=`
 <h3>Delivery : &#8377; ${DELIVERY_CHARGE}</h3>
 <h3>Parcel : &#8377; ${PARCEL_CHARGE}</h3>
 <h2>${t.total} : &#8377; ${total}</h2>
+<p style="color:#555;font-size:13px;">⚠ ${t.instructions}</p>
+
+<label style="display:flex;align-items:center;margin-top:10px;">
+<input type="checkbox" id="agreeTerms" style="margin-right:8px;">
+${t.agree}
+</label>
+<p style="color:#555;font-size:13px;margin-top:10px;">
+⚠ ${t.instructions}
+</p>
 
 <button onclick="placeOrder(${total},'COD')">${t.cod}</button>
 
@@ -947,42 +977,63 @@ app.appendChild(form)
 
 function placeOrder(total,payment){
 
-let orderID="AGR"+orderCounter
+let orderID = "AGR" + Date.now()   // ✅ ADD THIS
 
-orderCounter++
-localStorage.setItem("orderCounter",orderCounter)
+if(!document.getElementById("agreeTerms")?.checked){
+alert("Please accept terms")
+return
+}
 
 let order={
 
-orderID,
-name:document.getElementById("name").value,
-phone:document.getElementById("phone").value,
-address:document.getElementById("address").value,
-items:selected,
-total,
-payment,
-date:new Date().toLocaleDateString("en-IN"),
-createdDate:new Date().toISOString(),
+type:"order",
 
-status:"Processing"   
+orderID,   // ✅ NOW WORK AGUTTE
+
+name:document.getElementById("name").value,
+phone:String(document.getElementById("phone").value).trim(),
+address:document.getElementById("address").value,
+
+total:Number(total),
+
+payment: payment,
+
+machine:"",
+machineDate:"",
+slot:"",
+
+status:"Processing",
+
+createdDate:new Date().toISOString()
 
 }
 
+// LOCAL
 orders.push(order)
-order.type = "order"
-fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec",{
-method:"POST",
-body:JSON.stringify(order)
-})
 
-localStorage.setItem("orders",JSON.stringify(orders))
+// SERVER SAVE
+let url = "https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec" +
+"?type=order" +
+"&orderID=" + orderID +
+"&name=" + document.getElementById("name").value +
+"&phone=" + document.getElementById("phone").value +
+"&address=" + document.getElementById("address").value +
+"&total=" + total +
+"&payment=" + payment +
+"&status=Processing" +
+"&createdDate=" + new Date().toISOString()
 
+fetch(url)
+
+// SUCCESS UI
+showPaymentSuccess(orderID)
+
+// RESET
 cart=[]
 selected=[]
 
-showPaymentSuccess(orderID)
-
 }
+
 function showPaymentSuccess(orderID){
 
 app.innerHTML=""
@@ -1048,11 +1099,13 @@ app.appendChild(box)
 
 /* ================= ORDER HISTORY (UPDATED) ================= */
 
-function openOrderHistory(){
+async function openOrderHistory(){
+
+await loadOrdersFromServer()   // 🔥 ADD THIS LINE
 let t = translations[lang]
 
 // 🔥 1. ALWAYS LOAD LATEST DATA
-orders = JSON.parse(localStorage.getItem("orders")) || []
+
 
 // 🔥 2. PHONE INPUT CLEAN
 let phone = prompt(translations[lang].phone)?.trim()
@@ -1115,12 +1168,13 @@ ${o.return ? `
 
 /* ================= BOOKING HISTORY ================= */
 
-function openBookingHistory(){
+async function openBookingHistory(){
+
+await loadOrdersFromServer()   // 🔥 ADD THIS
 
 let t = translations[lang]   // ✅ ADD THIS LINE
 
 // 🔥 ALWAYS LOAD LATEST DATA
-bookings = JSON.parse(localStorage.getItem("machineBookings")) || []
 
 let phone = prompt(translations[lang].phone)?.trim()
 
@@ -1171,9 +1225,10 @@ ${b.cancelReason ? `<p style="color:red;">Reason: ${b.cancelReason}</p>` : ""}
 
 /* CANCEL BOOKING */
 
-function cancelBooking(index){
+async function cancelBooking(index){
 
 let t = translations[lang]
+
 let reason = prompt(t.cancelPrompt)
 
 if(!reason){
@@ -1183,13 +1238,20 @@ return
 
 if(confirm(t.confirmCancel)){
 
-bookings[index].status="Cancelled"
-bookings[index].cancelReason=reason
+bookings[index].status = "Cancelled"
+bookings[index].cancelReason = reason
 
-localStorage.setItem("machineBookings",JSON.stringify(bookings))
+// SERVER UPDATE
+await fetch(API_URL +
+"?action=updateBooking" +
+"&phone=" + bookings[index].phone +
+"&status=Cancelled" +
+"&reason=" + encodeURIComponent(reason)
+)
 
 alert("Booking Cancelled ❌")
 
+loadOrdersFromServer()
 openBookingHistory()
 
 }
@@ -1241,7 +1303,7 @@ min="${new Date().toISOString().split('T')[0]}">
 
 /* CONFIRM REBOOK */
 
-function confirmRebooking(index,payment){
+async function confirmRebooking(index,payment){
 
 let date=document.getElementById("date").value
 let slot=document.getElementById("slot").value
@@ -1270,9 +1332,18 @@ bookings[index].address=document.getElementById("address").value
 bookings[index].machineDate=date
 bookings[index].slot=slot
 bookings[index].payment=payment
-bookings[index].status="Rescheduled"
-
-localStorage.setItem("machineBookings",JSON.stringify(bookings))
+bookings[index].status="Rebooked"
+await fetch(API_URL +
+"?action=updateBooking" +
+"&phone=" + bookings[index].phone +
+"&status=Rebooked" +
+"&machineDate=" + date +
+"&slot=" + slot
+)
+bookings[index].reschedule = {
+newDate: date,
+reason: "User rescheduled"
+}
 
 if(payment==="UPI"){
 openUPI(bookings[index].total,"booking")
@@ -1285,10 +1356,9 @@ openBookingHistory()
 
 }
 
-function cancelOrder(index){
+async function cancelOrder(index){
 
 let t = translations[lang]
-
 let reason = prompt(t.cancelPrompt)
 
 if(!reason){
@@ -1301,17 +1371,23 @@ if(confirm(t.confirmCancel)){
 orders[index].status = "Cancelled"
 orders[index].cancelReason = reason
 
-localStorage.setItem("orders", JSON.stringify(orders))
+await fetch(API_URL +
+"?action=updateOrder" +
+"&orderID=" + orders[index].orderID +
+"&status=Cancelled" +
+"&reason=" + encodeURIComponent(reason)
+)
 
 alert("Order Cancelled ❌")
 
+await loadOrdersFromServer()
 openOrderHistory()
 
 }
 
 }
-
 function showReturnForm(index){
+
 
 let t = translations[lang]
 
@@ -1382,6 +1458,10 @@ showOrders()
 
 function showOrders(){
 
+  document.getElementById("ordersContainer").style.display = "block"
+  document.getElementById("bookingsContainer").style.display = "none"
+
+
 let content=document.getElementById("adminContent")
 
 content.innerHTML="<h3>Orders</h3>"
@@ -1407,6 +1487,9 @@ content.innerHTML+=`
 }
 
 function showBookings(){
+  document.getElementById("ordersContainer").style.display = "none"
+  document.getElementById("bookingsContainer").style.display = "block"
+
 
 let content=document.getElementById("adminContent")
 
@@ -1450,11 +1533,10 @@ app.innerHTML=`
 }
 /* TRACK ORDER */
 
-function trackOrder(){
-let t = translations[lang]   
+async function trackOrder(){
 
-orders = JSON.parse(localStorage.getItem("orders")) || []
-bookings = JSON.parse(localStorage.getItem("machineBookings")) || []
+await loadOrdersFromServer()   // 🔥 ADD THIS
+let t = translations[lang]   
 
 let phone = prompt("Enter your phone number")?.trim()
 
@@ -1515,79 +1597,67 @@ app.innerHTML+=`
 
 function confirmBooking(machine,total,payment){
 
+if(!document.getElementById("agreeTerms")?.checked){
+alert("Please accept terms")
+return
+}
+
 let date=document.getElementById("date").value
 let slot=document.getElementById("slot").value
 
-let bookings=JSON.parse(localStorage.getItem("machineBookings"))||[]
-
-let alreadyBooked=bookings.find(b =>
-b.machine===machine && b.machineDate===date && b.slot===slot
-)
-
-if(alreadyBooked){
-alert("❌ This time slot already booked")
-return
-}
-
-let sameDateBookings=bookings.filter(b =>
-b.machine===machine && b.machineDate===date
-)
-
-if(sameDateBookings.length>=5){
-alert("❌ All slots booked for this date")
-return
-}
-
 let booking={
+
+type:"booking",   // ✅ IMPORTANT
+
+orderID:"",
 
 machine,
 name:document.getElementById("name").value,
 phone:String(document.getElementById("phone").value).trim(),
-address:document.getElementById("address").value,   // ✅ ADD THIS
+address:document.getElementById("address").value,
 
-bookingDate:new Date().toLocaleDateString("en-IN"), // ✅ ADD THIS
+total:Number(total),
+
+payment: payment,
 
 machineDate:date,
-
 slot,
-total,
-payment,
-createdDate:new Date().toISOString(),
 
-status:"Booked"   
+status:"Booked",
+
+createdDate:new Date().toISOString()
 
 }
 
+// LOCAL
 bookings.push(booking)
-/* GOOGLE SHEET AUTOMATION */
 
-fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-type:"booking",
-...booking
-})
-})
-.then(res=>res.text())
-.then(data=>console.log("Machine Booking Saved:",data))
-.catch(err=>console.error("Error:",err));
+// SERVER SAVE
 
-localStorage.setItem("machineBookings",JSON.stringify(bookings))
+let url = "https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec" +
+"?type=booking" +
+"&name=" + document.getElementById("name").value +
+"&phone=" + document.getElementById("phone").value +
+"&address=" + document.getElementById("address").value +
+"&total=" + total +
+"&payment=" + payment +
+"&machine=" + machine +
+"&machineDate=" + date +
+"&slot=" + slot +
+"&status=Booked" +
+"&createdDate=" + new Date().toISOString()
 
-alert("Machine Booking Confirmed 🚜")
+fetch(url)
 
 homePage()
-
 }
+
+
 /* CHECK MACHINE DATE AVAILABILITY */
 function checkMachineAvailability(machine){
 
 let date=document.getElementById("date").value
 
-let bookings=JSON.parse(localStorage.getItem("machineBookings"))||[]
 
 let slots=document.getElementById("slot")
 
@@ -1632,32 +1702,45 @@ document.getElementById("date").value=""
 /* CHECK SLOT AVAILABILITY */
 
 homePage()
-function submitReturn(index){
+
+async function submitReturn(index){
+
 let t = translations[lang]
 
-let reason=document.getElementById("reason").value
-let file=document.getElementById("image").files[0]
+let reason = document.getElementById("reason").value
+let file = document.getElementById("image").files[0]
 
 if(!reason){
 alert(t.enterReason)
 return
 }
 
-let reader=new FileReader()
+let reader = new FileReader()
 
-reader.onload=function(){
+reader.onload = async function(){
 
-orders[index].return={
-reason:reason,
-image:reader.result,
-date:new Date().toLocaleDateString("en-IN")
+let imgBase64 = reader.result
+
+orders[index].status = "Returned"
+
+orders[index].return = {
+reason: reason,
+image: imgBase64
 }
 
-orders[index].status="Return Requested"
+// 🔥 SERVER UPDATE
+await fetch(API_URL +
+"?action=updateOrder" +
+"&orderID=" + orders[index].orderID +
+"&status=Returned" +
+"&reason=" + encodeURIComponent(reason) +
+"&image=" + encodeURIComponent(imgBase64)
+)
 
-localStorage.setItem("orders",JSON.stringify(orders))
+alert("Return Submitted ✅")
 
-alert("Return Request Submitted 🔁")
+// 🔥 Reload latest data
+await loadOrdersFromServer()
 
 openOrderHistory()
 
@@ -1670,6 +1753,8 @@ reader.onload()
 }
 
 }
+
+
 function getOrderStatusUI(status){
 
 if(status==="Processing") return "🟡 Processing"
@@ -2205,18 +2290,54 @@ reader.readAsDataURL(file)
 }
 
 })
-loadOrdersFromServer()
 async function loadOrdersFromServer(){
 
 try{
 
-let res = await fetch("https://script.google.com/macros/s/AKfycbwvwBT--IH_npMdx5T_UnxFtuEm0h57knsPZhyqZo0wMXnjC3e-FG3ZjnIeiI9Hu2Wp/exec")
+let res = await fetch("https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec")
 
 let data = await res.json()
 
-orders = data
+orders = []
+bookings = []
 
-console.log("Orders loaded:", orders)
+data.forEach(d=>{
+
+  if(d.type==="order"){
+    orders.push({
+      orderID:d.orderID,
+      name:d.name,
+      phone:d.phone,
+      address:d.address,
+      total:d.total,
+      payment:d.payment,
+      status:d.status,
+      cancelReason:d.reason,
+      return:{
+  reason:d.reason,
+  image:d.image
+},
+      createdDate:d.createDate
+    })
+  }
+
+  if(d.type==="booking"){
+    bookings.push({
+      name:d.name,
+      phone:d.phone,
+      address:d.address,
+      total:d.total,
+      machine:d.machine,
+      machineDate:d.machineDate,
+      slot:d.slot,
+      status:d.status,
+      cancelReason:d.reason
+    })
+  }
+
+})
+
+console.log("✅ LIVE DATA LOADED")
 
 }catch(err){
 console.error("Error loading orders", err)
