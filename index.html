@@ -46,11 +46,53 @@
 
 <div class="search-container">
 
-<button onclick="openFeed()" class="feed-btn">
-🌾 Open Farmer Feed
-</button>
+<!-- ================= BANNER ================= -->
 
-<input type="text" id="searchBox">
+<div class="banner-slider">
+
+  <button class="banner-arrow left" onclick="prevSlide()">❮</button>
+
+  <div class="banner-slides">
+
+    <div class="banner active">
+      <div class="banner-text">
+        <h2>🚜 Tractor Booking @ ₹499</h2>
+        <p>Best price for farmers</p>
+      </div>
+      <img src="images/tractor.png">
+    </div>
+
+    <div class="banner">
+      <div class="banner-text">
+        <h2>🌱 Seeds 20% OFF</h2>
+        <p>Limited time offer</p>
+      </div>
+      <img src="images/seeds.png">
+    </div>
+
+    <div class="banner">
+      <div class="banner-text">
+        <h2>💧 Irrigation Tools</h2>
+        <p>High quality products</p>
+      </div>
+      <img src="images/irrigation.png">
+    </div>
+
+  </div>
+
+  <button class="banner-arrow right" onclick="nextSlide()">❯</button>
+
+</div>
+
+<!-- ================= BELOW BANNER ================= -->
+
+<div class="below-banner">
+
+  <button onclick="openFeed()" class="feed-btn">
+    🌾 Open Farmer Feed
+  </button>
+
+  <input type="text" id="searchBox" placeholder="Search products...">
 
 </div>
 
@@ -117,30 +159,6 @@ style="background:#ff9800;color:white;padding:12px 20px;border-radius:8px;text-d
 
 <script src="app.js"></script>
 
-<!-- ================= FLOATING WHATSAPP ================= -->
-
-<a href="https://wa.me/918660957328?text=Hi%20I%20want%20to%20order%20from%20Agriallrounder" 
-class="whatsapp-float" target="_blank">
-💬
-</a>
-
-<style>
-.whatsapp-float {
-position: fixed;
-bottom: 20px;
-right: 20px;
-background-color: #25D366;
-color: white;
-font-size: 28px;
-padding: 12px 16px;
-border-radius: 50%;
-text-decoration: none;
-box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-.whatsapp-float:hover {
-background-color: #1ebe5d;
-}
-</style>
 
 </body>
 </html>

@@ -44,7 +44,7 @@ async function loadServerData(){
         status: d.status || "Processing",
         reason: d.reason || "",
         image: d.image || "",
-        createdDate: d.createdDate
+        createdDate: d.createdDate || d.createDate
       })
       }
 
@@ -60,7 +60,7 @@ async function loadServerData(){
     slot: d.slot,
     status: d.status || "Booked",
     cancelReason: d.reason || "",
-    createdDate: d.createdDate
+    createdDate: d.createdDate || d.createDate
   })
 }
 
@@ -195,16 +195,15 @@ function loadOrders(data){
       <b>Payment:</b> ${o.payment}<br>
       <b>Date:</b> ${formatDate(o.createdDate)}<br>
 
-      <b>Status:</b>
-      ${o.reason ? `<br><b>Reason:</b> ${o.reason}` : ""}
+      <b>Status:</b> 
+      <span class="status-${o.status.toLowerCase()}">${o.status}</span>
       <select onchange="updateOrderStatus(${i}, this.value)">
         <option ${o.status==="Processing"?"selected":""}>Processing</option>
         <option ${o.status==="Cancelled"?"selected":""}>Cancelled</option>
         <option ${o.status==="Returned"?"selected":""}>Returned</option>
         <option ${o.status==="Delivered"?"selected":""}>Delivered</option>
       </select><br>
-      ${o.image ? `<br><img src="${o.image}" width="120">` : ""}
-
+     ${o.image ? `<br><b>Return Proof:</b><br><img src="${o.image}" width="120">` : ""}
       <div id="orderExtra${i}"></div>
 
       <button onclick="showOrderExtra(${i})">Add Reason</button>
@@ -246,15 +245,19 @@ function loadBookings(data){
       <b>Price:</b> ₹${b.total}<br>
       <b>Payment:</b> ${b.payment}<br>
 
-      <b>Status:</b>
+      <b>Status:</b> 
+      <span class="status-${b.status.toLowerCase()}">${b.status}</span><br>
+
       ${b.cancelReason ? `<br><b>Reason:</b> ${b.cancelReason}` : ""}
+
       ${b.status==="Rebooked" ? `<p style="color:orange;"><b>Rebooked Slot:</b> ${b.machineDate} | ${b.slot}</p>` : ""}
+
       <select onchange="updateBookingStatus(${i}, this.value)">
-        <option ${b.status==="Booked"?"selected":""}>Booked</option>
-        <option ${b.status==="Cancelled"?"selected":""}>Cancelled</option>
-        <option ${b.status==="Completed"?"selected":""}>Completed</option>
-        <option ${b.status==="Rebooked"?"selected":""}>Rebooked</option>
-      </select><br>
+      <option ${b.status==="Booked"?"selected":""}>Booked</option>
+      <option ${b.status==="Cancelled"?"selected":""}>Cancelled</option>
+      <option ${b.status==="Completed"?"selected":""}>Completed</option>
+      <option ${b.status==="Rebooked"?"selected":""}>Rebooked</option>
+      </select>
 
     
 
@@ -338,9 +341,18 @@ function showBookingExtra(i){
 }
 
 function saveBookingExtra(i){
+
   let reason = document.getElementById("breason"+i).value
-  bookings[i].reason = reason
-  alert("Saved")
+
+  bookings[i].cancelReason = reason
+
+  fetch(API_URL +
+    "?action=updateBooking" +
+    "&phone=" + bookings[i].phone +
+    "&reason=" + encodeURIComponent(reason)
+  )
+
+  alert("Saved ✅")
 }
 
 /* ================= DELETE ================= */

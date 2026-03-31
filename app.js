@@ -512,8 +512,8 @@ currentUser = "Farmer_" + savedUser.slice(-4)
 /* GLOBAL */
 
 const GST_PERCENT = 18
-const DELIVERY_CHARGE = 50
-const PARCEL_CHARGE = 40
+const DELIVERY_CHARGE = 40
+const PARCEL_CHARGE = 50
 
 let cart=[]
 let selected=[]
@@ -650,6 +650,8 @@ app.appendChild(grid)
 }
 /* ================= SEARCH FUNCTION ================= */
 
+window.addEventListener("DOMContentLoaded", function(){
+
 const searchBox = document.getElementById("searchBox")
 
 if(searchBox){
@@ -705,24 +707,18 @@ plus.onclick=()=>{qty++;num.innerText=qty}
 let add=document.createElement("button")
 
 if(category==="Machines"){
-
 add.innerText = translations[lang].bookMachine
 add.onclick=()=>openMachineBooking(p)
-
 }else{
-
 add.innerText = translations[lang].addCart
-
 add.onclick=()=>{
 cart.push({name:p.name,price:p.price,qty:qty})
 updateCart()
 alert(translations[lang].addCart)
 }
-
 }
 
 card.append(minus,num,plus,add)
-
 grid.appendChild(card)
 
 }
@@ -736,6 +732,8 @@ app.appendChild(grid)
 })
 
 }
+
+})
 
 /* CATEGORY */
 
@@ -826,7 +824,7 @@ form.innerHTML=`
 <textarea id="address" placeholder="${t.address}"></textarea>
 
 <label>${t.selectDate}</label>
-<input type="date" id="date">
+<input type="date" id="date" onchange="checkMachineAvailability('${machine.name}')">
 
 <label>${t.selectSlot}</label>
 
@@ -936,8 +934,7 @@ backBtn()
 let subtotal=0
 selected.forEach(i=>subtotal+=i.price*i.qty)
 
-let gst=subtotal*GST_PERCENT/100
-let total=subtotal+gst+DELIVERY_CHARGE+PARCEL_CHARGE
+let total = subtotal + DELIVERY_CHARGE + PARCEL_CHARGE
 
 let form=document.createElement("div")
 form.className="orderForm"
@@ -951,7 +948,6 @@ form.innerHTML=`
 <textarea id="address" placeholder="${t.address}"></textarea>
 
 <h3>Subtotal : &#8377; ${subtotal}</h3>
-<h3>GST : &#8377; ${gst}</h3>
 <h3>Delivery : &#8377; ${DELIVERY_CHARGE}</h3>
 <h3>Parcel : &#8377; ${PARCEL_CHARGE}</h3>
 <h2>${t.total} : &#8377; ${total}</h2>
@@ -1595,7 +1591,9 @@ app.innerHTML+=`
 
 }
 
-function confirmBooking(machine,total,payment){
+async function confirmBooking(machine,total,payment){
+
+await loadOrdersFromServer()   // 🔥 IMPORTANT
 
 if(!document.getElementById("agreeTerms")?.checked){
 alert("Please accept terms")
@@ -1604,6 +1602,18 @@ return
 
 let date=document.getElementById("date").value
 let slot=document.getElementById("slot").value
+
+// 🔥 CHECK SLOT
+let alreadyBooked = bookings.find(b =>
+b.machine === machine.name &&
+b.machineDate?.split("T")[0] === date &&
+b.slot === slot
+)
+
+if(alreadyBooked){
+alert("❌ Slot already booked")
+return
+}
 
 let booking={
 
@@ -1671,7 +1681,7 @@ options[i].text=options[i].value
 }
 
 let sameDate=bookings.filter(b =>
-b.machine===machine && b.machineDate===date
+b.machineDate?.split("T")[0] === date && b.machineDate?.split("T")[0] === date
 )
 
 sameDate.forEach(b=>{
@@ -1701,8 +1711,6 @@ document.getElementById("date").value=""
 
 /* CHECK SLOT AVAILABILITY */
 
-homePage()
-
 async function submitReturn(index){
 
 let t = translations[lang]
@@ -1715,42 +1723,45 @@ alert(t.enterReason)
 return
 }
 
-let reader = new FileReader()
+// 🔥 Upload image to Cloudinary
+let imageUrl = ""
 
-reader.onload = async function(){
+if(file){
 
-let imgBase64 = reader.result
+let formData = new FormData()
+formData.append("file", file)
+formData.append("upload_preset", "agriallrounder")
 
+let res = await fetch("https://api.cloudinary.com/v1_1/dmfsyrxly/image/upload",{
+method:"POST",
+body:formData
+})
+
+let data = await res.json()
+imageUrl = data.secure_url
+}
+
+// 🔥 Update order
 orders[index].status = "Returned"
 
 orders[index].return = {
 reason: reason,
-image: imgBase64
+image: imageUrl
 }
 
-// 🔥 SERVER UPDATE
+// 🔥 Send to Google Sheet
 await fetch(API_URL +
 "?action=updateOrder" +
 "&orderID=" + orders[index].orderID +
 "&status=Returned" +
 "&reason=" + encodeURIComponent(reason) +
-"&image=" + encodeURIComponent(imgBase64)
+"&image=" + encodeURIComponent(imageUrl)
 )
 
 alert("Return Submitted ✅")
 
-// 🔥 Reload latest data
 await loadOrdersFromServer()
-
 openOrderHistory()
-
-}
-
-if(file){
-reader.readAsDataURL(file)
-}else{
-reader.onload()
-}
 
 }
 
@@ -2317,7 +2328,7 @@ data.forEach(d=>{
   reason:d.reason,
   image:d.image
 },
-      createdDate:d.createDate
+      createdDate:d.createdDate
     })
   }
 
@@ -2345,8 +2356,32 @@ console.error("Error loading orders", err)
 
 }
 
-loadOrdersFromServer()
-homePage()
+window.onload = function(){
+  loadOrdersFromServer()
+  homePage()
+}
+
+let currentSlide = 0
+let slides = document.getElementsByClassName("banner")
+
+function showSlide(index){
+  for(let i=0;i<slides.length;i++){
+    slides[i].classList.remove("active")
+  }
+  slides[index].classList.add("active")
+}
+
+function nextSlide(){
+  currentSlide = (currentSlide + 1) % slides.length
+  showSlide(currentSlide)
+}
+
+function prevSlide(){
+  currentSlide = (currentSlide - 1 + slides.length) % slides.length
+  showSlide(currentSlide)
+}
+
+setInterval(nextSlide,3000)
 
 
 
