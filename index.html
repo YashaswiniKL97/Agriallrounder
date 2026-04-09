@@ -44,53 +44,48 @@
 
 <!-- ================= SEARCH BAR ================= -->
 
+<div id="mainContent">
+
+<!-- ================= SEARCH BAR ================= -->
+
 <div class="search-container">
 
 <!-- ================= BANNER ================= -->
 
 <div class="banner-slider">
 
-  <button class="banner-arrow left" onclick="prevSlide()">❮</button>
+<h2 class="offer-title">🔥 Best Offers for Farmers</h2>
 
-  <div class="banner-slides">
+<div class="offer-items">
 
-    <div class="banner active">
-      <div class="banner-text">
-        <h2>🚜 Tractor Booking @ ₹499</h2>
-        <p>Best price for farmers</p>
-      </div>
-      <img src="images/tractor.png">
-    </div>
+<div class="offer-track">
 
-    <div class="banner">
-      <div class="banner-text">
-        <h2>🌱 Seeds 20% OFF</h2>
-        <p>Limited time offer</p>
-      </div>
-      <img src="images/seeds.png">
-    </div>
+<div class="offer-card"><img src="images/tractor.png"><p>🚜 Tractor ₹499/hr</p></div>
+<div class="offer-card"><img src="images/seeds.png"><p>🌱 Seeds ₹99</p></div>
+<div class="offer-card"><img src="images/fertilizer.png"><p> 20% OFF</p></div>
+<div class="offer-card"><img src="images/pesticide.png"><p> Best Deals</p></div>
 
-    <div class="banner">
-      <div class="banner-text">
-        <h2>💧 Irrigation Tools</h2>
-        <p>High quality products</p>
-      </div>
-      <img src="images/irrigation.png">
-    </div>
-
-  </div>
-
-  <button class="banner-arrow right" onclick="nextSlide()">❯</button>
+<!-- duplicate -->
+<div class="offer-card"><img src="images/tractor.png"><p>🚜 Tractor ₹499/hr</p></div>
+<div class="offer-card"><img src="images/seeds.png"><p>🌱 Seeds ₹99</p></div>
+<div class="offer-card"><img src="images/fertilizer.png"><p> 20% OFF</p></div>
+<div class="offer-card"><img src="images/pesticide.png"><p> Best Deals</p></div>
 
 </div>
+
+</div>
+
+</div>
+
+<!-- arrows -->
 
 <!-- ================= BELOW BANNER ================= -->
 
 <div class="below-banner">
 
-  <button onclick="openFeed()" class="feed-btn">
-    🌾 Open Farmer Feed
-  </button>
+  <button onclick="window.location.href='feed.html'" class="feed-btn">
+🌾 Open Farmer Feed
+</button>
 
   <input type="text" id="searchBox" placeholder="Search products...">
 
@@ -98,67 +93,77 @@
 
 <!-- ================= MAIN APP CONTENT ================= -->
 
-<div id="app"></div>
+<div id="app" style="display:none;"></div>
+
+<!-- ================= WHATSAPP SECTION ================= -->
 
 <!-- ================= WHATSAPP SECTION ================= -->
 
 <div style="text-align:center; margin:50px 20px;">
 
-<h2 id="waTitle"></h2>
+<h2 id="waTitle">📲 Order & Book via WhatsApp</h2>
 
-<a id="waOrderBtn"
-href="https://wa.me/918660957328?text=Hi%20I%20want%20to%20order%20from%20Agriallrounder" 
-target="_blank"
-style="background:#25D366;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;margin:10px;display:inline-block;">
+<button id="waOrderBtn"
+onclick="window.open('https://wa.me/918660957328?text=I want to order products')"
+style="padding:12px 20px;margin:10px;background:#25D366;color:white;border:none;border-radius:10px;">
 🛒 Order on WhatsApp
-</a>
+</button>
 
-<a id="waBookBtn"
-href="https://wa.me/918660957328?text=Hi%20I%20want%20to%20book%20a%20machine" 
-target="_blank"
-style="background:#007bff;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;margin:10px;display:inline-block;">
-🚜 Book Machine
-</a>
+<br>
+
+<button id="waBookBtn"
+onclick="window.open('https://wa.me/918660957328?text=I want to book machine')"
+style="padding:12px 20px;margin:10px;background:#128C7E;color:white;border:none;border-radius:10px;">
+🚜 Book Machine via WhatsApp
+</button>
 
 </div>
+
 
 <!-- ================= GOOGLE FORM SECTION ================= -->
 
 <div style="text-align:center; margin:40px;">
 
-<h2 id="formTitle"></h2>
+<h2 id="formTitle">📝 Order & Booking via Google Form</h2>
 
-<a id="orderFormBtn"
-href="https://docs.google.com/forms/d/e/1FAIpQLSei20lGx1rF4L_q-Xne8q2nEB69ygv0WBIUYFPl0v4fv9HUfg/viewform" 
-target="_blank"
-style="background:#673ab7;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;margin:10px;display:inline-block;">
-📝 Order Form
-</a>
+<button id="orderFormBtn"
+onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSei20lGx1rF4L_q-Xne8q2nEB69ygv0WBIUYFPl0v4fv9HUfg/viewform')"
+style="padding:12px 20px;margin:10px;background:#1976d2;color:white;border:none;border-radius:10px;">
+📝 Order via Google Form
+</button>
 
-<a id="bookingFormBtn"
-href="https://docs.google.com/forms/d/e/1FAIpQLScVL0UZcso8FscnanyOAn4kqMO1KtaRLaR7Kch56jJt9BGyLQ/viewform" 
-target="_blank"
-style="background:#ff9800;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;margin:10px;display:inline-block;">
-🚜 Booking Form
-</a>
+<br>
+
+<button id="bookingFormBtn"
+onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScVL0UZcso8FscnanyOAn4kqMO1KtaRLaR7Kch56jJt9BGyLQ/viewform')"
+style="padding:12px 20px;margin:10px;background:#ef6c00;color:white;border:none;border-radius:10px;">
+🚜 Book Machine via Google Form
+</button>
 
 </div>
 
+</div> <!-- ✅ CLOSE mainContent -->
+
 <!-- ================= BOTTOM NAV ================= -->
 
-<div class="bottom-nav">
+<div class="bottom-nav" id="mainNav">
 
 <button id="homeBtn" onclick="homePage()">🏠 Home</button>
+
 <button id="cartBtn" onclick="openCart()">🛒 Cart</button>
+
 <button id="helpBtn" onclick="openHelp()">❓ Help</button>
-<button onclick="openProfile()">👤 Profile</button>
+
+<button id="profileBtn" onclick="openProfile()">👤 Profile</button>
 
 </div>
 
 <!-- ================= SCRIPT ================= -->
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="app.js"></script>
+
 
 
 </body>
 </html>
+

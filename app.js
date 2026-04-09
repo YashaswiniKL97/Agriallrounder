@@ -1,3 +1,17 @@
+console.log("APP JS LOADED")
+
+const SUPABASE_URL = "https://zpvuyiuhnklszzefktkr.supabase.co"
+const SUPABASE_KEY = "sb_publishable_6w4RAoYDszXfGny5NFbVWQ_rn24FYM2"
+
+// create only once
+if (!window.supabaseInstance) {
+  window.supabaseInstance = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+}
+
+// use var (important)
+var supabase = window.supabaseInstance
+
+
 const app=document.getElementById("app")
 // SERVER API
 const API_URL = "https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec"
@@ -500,20 +514,11 @@ Machines:"యంత్రాలు"
 },
 }
 
-let currentUser = localStorage.getItem("currentUser") || "Farmer_" + Math.floor(Math.random()*1000)
-localStorage.setItem("currentUser", currentUser)
-
-let savedUser = localStorage.getItem("farmerUser")
-
-if(savedUser){
-currentUser = "Farmer_" + savedUser.slice(-4)
-}
-
 /* GLOBAL */
 
 const GST_PERCENT = 18
-const DELIVERY_CHARGE = 40
-const PARCEL_CHARGE = 50
+const DELIVERY_CHARGE = 30
+const PARCEL_CHARGE = 30
 
 let cart=[]
 let selected=[]
@@ -623,7 +628,27 @@ app.prepend(back)
 
 function homePage(){
 
+let mainContent = document.getElementById("mainContent")
+if(mainContent){
+mainContent.style.display = "block"
+}
+
+let app = document.getElementById("app")
+
+// 🔥 ADD THIS LINE
+app.style.display = "block"
+
+app.innerHTML = ""
+
+// ✅ SHOW NAVBAR
+let nav = document.getElementById("mainNav")
+if(nav){
+nav.style.display = "flex"
+}
+
+// ✅ CLEAR FEED
 app.innerHTML=""
+
 updateCart()
 
 let grid=document.createElement("div")
@@ -646,94 +671,8 @@ grid.appendChild(card)
 })
 
 app.appendChild(grid)
-
 }
 /* ================= SEARCH FUNCTION ================= */
-
-window.addEventListener("DOMContentLoaded", function(){
-
-const searchBox = document.getElementById("searchBox")
-
-if(searchBox){
-
-searchBox.addEventListener("keyup",function(){
-
-let value = searchBox.value.toLowerCase()
-
-if(value===""){
-homePage()
-return
-}
-
-app.innerHTML=""
-backBtn()
-
-let grid=document.createElement("div")
-grid.className="grid"
-
-Object.keys(allProducts).forEach(category=>{
-
-allProducts[category].forEach(p=>{
-
-if(
-p.name.toLowerCase().includes(value) ||
-category.toLowerCase().includes(value)
-){
-
-let qty=1
-
-let card=document.createElement("div")
-card.className="card"
-
-card.innerHTML=`
-<img src="${p.img}">
-<h3>${translations[lang][p.name] || p.name}</h3>
-<p>&#8377; ${p.price}</p>
-`
-
-let minus=document.createElement("button")
-minus.innerText="-"
-
-let num=document.createElement("span")
-num.innerText=qty
-num.style.margin="0 10px"
-
-let plus=document.createElement("button")
-plus.innerText="+"
-
-minus.onclick=()=>{if(qty>1){qty--;num.innerText=qty}}
-plus.onclick=()=>{qty++;num.innerText=qty}
-
-let add=document.createElement("button")
-
-if(category==="Machines"){
-add.innerText = translations[lang].bookMachine
-add.onclick=()=>openMachineBooking(p)
-}else{
-add.innerText = translations[lang].addCart
-add.onclick=()=>{
-cart.push({name:p.name,price:p.price,qty:qty})
-updateCart()
-alert(translations[lang].addCart)
-}
-}
-
-card.append(minus,num,plus,add)
-grid.appendChild(card)
-
-}
-
-})
-
-})
-
-app.appendChild(grid)
-
-})
-
-}
-
-})
 
 /* CATEGORY */
 
@@ -824,7 +763,7 @@ form.innerHTML=`
 <textarea id="address" placeholder="${t.address}"></textarea>
 
 <label>${t.selectDate}</label>
-<input type="date" id="date" onchange="checkMachineAvailability('${machine.name}')">
+<input type="date" id="date" onchange="checkMachineAvailability('${machine}')">
 
 <label>${t.selectSlot}</label>
 
@@ -1500,7 +1439,7 @@ content.innerHTML+=`
 <p>Machine : ${b.machine}</p>
 <p>Name : ${b.name}</p>
 <p>Phone : ${b.phone}</p>
-<p>Date : ${b.date}</p>
+<p>Date : ${b.machineDate}</p>
 <p>Slot : ${b.slot}</p>
 
 
@@ -1605,7 +1544,7 @@ let slot=document.getElementById("slot").value
 
 // 🔥 CHECK SLOT
 let alreadyBooked = bookings.find(b =>
-b.machine === machine.name &&
+b.machine === machine &&
 b.machineDate?.split("T")[0] === date &&
 b.slot === slot
 )
@@ -1680,8 +1619,8 @@ options[i].text=options[i].value
 
 }
 
-let sameDate=bookings.filter(b =>
-b.machineDate?.split("T")[0] === date && b.machineDate?.split("T")[0] === date
+let sameDate = bookings.filter(b =>
+b.machineDate?.split("T")[0] === date
 )
 
 sameDate.forEach(b=>{
@@ -1845,6 +1784,9 @@ if(cartBtn) cartBtn.innerText = "🛒 " + t.cart
 let sb = document.getElementById("searchBox")
 if(sb) sb.placeholder = t.search
 
+let profileBtn = document.getElementById("profileBtn")
+if(profileBtn) profileBtn.innerText = "👤 Profile"
+
 }
 let langSelect = document.getElementById("langSelect")
 if(langSelect){
@@ -1862,142 +1804,8 @@ homePage()
 // 🔥 keep this also
 applyLanguage()
 }
-let posts = JSON.parse(localStorage.getItem("farmerPosts")) || []
-let users = JSON.parse(localStorage.getItem("users")) || []
-localStorage.setItem("currentUser", currentUser)
 
-function addPost(){
 
-let text = document.getElementById("postInput").value
-let file = document.getElementById("postImage").files[0]
-
-if(!text){
-alert("Enter something")
-return
-}
-
-let reader = new FileReader()
-
-reader.onload=function(){
-let post={
-id: Date.now(),
-user: currentUser,
-text:text,
-image:reader.result || null,
-date:new Date().toLocaleString(),
-likes:[],
-comments:[]
-}
-
-posts.unshift(post)
-localStorage.setItem("farmerPosts", JSON.stringify(posts))
-
-document.getElementById("postInput").value=""
-document.getElementById("postImage").value=""
-
-loadPosts()
-}
-
-if(file){
-reader.readAsDataURL(file)
-}else{
-reader.onload()
-}
-
-}
-
-loadPosts()
-
-function loadPosts(){
-
-let container = document.getElementById("postsContainer")
-if(!container) return
-if(posts.length === 0){
-container.innerHTML = "<p style='text-align:center;padding:20px;'>No posts yet 🚜</p>"
-return
-}
-
-container.innerHTML = ""
-
-posts.forEach(p => {
-
-container.innerHTML += `
-
-<div style="background:white;margin-bottom:10px;border-bottom:1px solid #ddd;">
-
-<div style="padding:10px;font-weight:bold;">
-👨‍🌾 ${p.user}
-</div>
-
-<img src="${p.image}" style="width:100%;" ondblclick="likePost(${p.id})">
-
-<div style="padding:10px;">
-
-${p.type==="ad" ? `
-<b>📢 ${p.title}</b><br>
-₹${p.price} | 📞 ${p.contact}
-` : `
-${p.text}
-`}
-
-<div style="margin-top:8px;font-size:18px;">
-<span onclick="likePost(${p.id})" style="cursor:pointer;">❤️</span>
-<span onclick="toggleCommentBox(${p.id})"> 💬</span>
-<span onclick="resharePost(${p.id})"> 🔁</span>
-<span onclick="sharePost(${p.id})"> 📤</span>
-</div>
-
-<p style="font-size:14px;">❤️ ${p.likes.length} likes</p>
-
-<div>
-${p.comments.map(c=>`<p style="font-size:13px;">${c}</p>`).join("")}
-</div>
-
-</div>
-
-</div>
-`
-})
-
-}
-
-function likePost(id){
-
-let post = posts.find(p=>p.id===id)
-
-if(post.likes.includes(currentUser)){
-post.likes = post.likes.filter(u=>u!==currentUser)
-}else{
-post.likes.push(currentUser)
-}
-
-localStorage.setItem("farmerPosts", JSON.stringify(posts))
-loadPosts()
-
-}
-function toggleCommentBox(id){
-let box=document.getElementById("commentBox_"+id)
-box.style.display = box.style.display==="none" ? "block" : "none"
-}
-
-function addComment(id){
-
-let input=document.getElementById("commentInput_"+id)
-let text=input.value
-
-if(!text) return
-
-let post=posts.find(p=>p.id===id)
-
-post.comments.push(currentUser + ": " + text)
-
-localStorage.setItem("farmerPosts", JSON.stringify(posts))
-
-input.value=""
-
-loadPosts()
-
-}
 function showNotification(msg){
 
 let n = document.createElement("div")
@@ -2018,289 +1826,6 @@ setTimeout(()=>n.remove(),2000)
 
 }
 
-let following = JSON.parse(localStorage.getItem("following")) || []
-
-function followUser(user){
-
-if(user===currentUser){
-alert("You can't follow yourself")
-return
-}
-
-if(following.includes(user)){
-following = following.filter(u=>u!==user)
-}else{
-following.push(user)
-}
-
-localStorage.setItem("following", JSON.stringify(following))
-alert("Follow updated")
-
-}
-function addAd(){
-
-let title = prompt("Enter item (Tractor / Seeds / Machine)")
-let price = prompt("Enter price")
-let contact = prompt("Enter phone number")
-
-if(!title || !price || !contact) return
-
-posts.unshift({
-id: Date.now(),
-user: currentUser,
-type:"ad",
-title:title,
-price:price,
-contact:contact,
-date:new Date().toLocaleString(),
-likes:[],
-comments:[]
-})
-
-localStorage.setItem("farmerPosts", JSON.stringify(posts))
-loadPosts()
-
-}
-function resharePost(id){
-
-let original = posts.find(p=>p.id===id)
-
-let newPost = {
-...original,
-id: Date.now(),
-user: currentUser,
-date:new Date().toLocaleString()
-}
-
-posts.unshift(newPost)
-
-localStorage.setItem("farmerPosts", JSON.stringify(posts))
-loadPosts()
-
-}
-function sharePost(id){
-
-let p = posts.find(p=>p.id===id)
-
-let text = ""
-
-if(p.type==="ad"){
-text = `📢 ${p.title}\nPrice: ₹${p.price}\nContact: ${p.contact}`
-}else{
-text = p.text
-}
-
-let url = "https://wa.me/?text=" + encodeURIComponent(text)
-
-window.open(url,"_blank")
-
-}
-
-function openFeedLogin(){
-
-app.innerHTML=`
-
-<div style="text-align:center;padding:30px;">
-
-<h2>📱 Farmer Login</h2>
-
-<input id="phone" placeholder="Enter phone number"
-style="padding:10px;width:80%;border-radius:8px;">
-
-<br><br>
-
-<button onclick="simpleLogin()" 
-style="padding:10px 20px;background:#2e7d32;color:white;border:none;border-radius:8px;">
-Login
-</button>
-
-</div>
-
-`
-
-}
-function openFeed(){
-
-let user = localStorage.getItem("farmerUser")
-
-if(user){
-openFeedPage()   // already login
-}else{
-openFeedLogin()  // login first
-}
-
-}
-
-function openFeedPage(){
-
-if(!localStorage.getItem("farmerUser")){
-openFeedLogin()
-return
-}
-
-app.innerHTML = `
-
-<div style="max-width:500px;margin:auto;background:#fafafa;min-height:100vh;">
-
-<!-- HEADER -->
-<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;">
-
-<h3 style="color:#2e7d32;">
-🌾 Farmer Feed - 👨‍🌾 ${currentUser}
-</h3>
-
-<div>
-<button onclick="openProfile()" 
-style="margin-right:10px;background:#ffd600;border:none;padding:6px 10px;border-radius:6px;">
-👤
-</button>
-
-<button onclick="homePage()" 
-style="border:none;background:none;font-size:18px;">
-🏠
-</button>
-</div>
-
-</div>
-
-<!-- POST BOX -->
-<textarea id="postInput" placeholder="Share your farming idea..."
-style="width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;"></textarea>
-
-<label style="
-display:inline-block;
-width:50px;
-height:50px;
-background:#ffd600;
-border-radius:50%;
-text-align:center;
-line-height:50px;
-font-size:28px;
-cursor:pointer;
-margin-top:10px;
-">
-+
-<input type="file" id="postImage" accept="image/*,video/*,.pdf,.doc" style="display:none;">
-</label>
-
-<div id="preview" style="margin-top:10px;"></div>
-
-<div id="postsContainer"></div>
-
-</div>
-
-`
-
-loadPosts()
-
-}
-
-function simpleLogin(){
-
-let phone = document.getElementById("phone").value
-
-if(phone.length < 10){
-alert("Enter valid number")
-return
-}
-
-localStorage.setItem("farmerUser", phone)
-
-currentUser = "Farmer_" + phone.slice(-4)
-
-alert("Login Successful ✅")
-openFeedPage()
-
-}
-function openProfile(){
-
-let user = localStorage.getItem("farmerUser") || "Guest"
-let dp = localStorage.getItem("profilePic") || ""
-
-app.innerHTML = `
-
-<div style="text-align:center;padding:20px;">
-
-<h2>👤 Farmer Profile</h2>
-
-<img src="${dp || 'https://via.placeholder.com/100'}" 
-style="width:100px;height:100px;border-radius:50%;">
-
-<br><br>
-
-<input type="file" id="dpInput">
-
-<br><br>
-
-<input id="nameInput" placeholder="Enter name" value="${user}">
-
-<br><br>
-
-<button onclick="saveProfile()" 
-style="background:green;color:white;padding:10px 20px;border:none;border-radius:8px;">
-Save Profile
-</button>
-
-</div>
-
-`
-
-}
-function saveProfile(){
-
-let name = document.getElementById("nameInput").value
-let file = document.getElementById("dpInput").files[0]
-
-if(name){
-localStorage.setItem("farmerUser", name)
-}
-
-if(file){
-let reader = new FileReader()
-
-reader.onload=function(){
-localStorage.setItem("profilePic", reader.result)
-alert("Profile Updated ✅")
-openProfile()
-}
-
-reader.readAsDataURL(file)
-}else{
-alert("Profile Updated ✅")
-openProfile()
-}
-
-}
-document.addEventListener("change",function(e){
-
-if(e.target.id==="postImage"){
-
-let file = e.target.files[0]
-let preview = document.getElementById("preview")
-
-if(!file) return
-
-let reader = new FileReader()
-
-reader.onload=function(){
-
-if(file.type.startsWith("image")){
-preview.innerHTML = `<img src="${reader.result}" style="width:100%;border-radius:10px;">`
-}
-else if(file.type.startsWith("video")){
-preview.innerHTML = `<video src="${reader.result}" controls style="width:100%;border-radius:10px;"></video>`
-}
-else{
-preview.innerHTML = `<p>📄 ${file.name}</p>`
-}
-
-}
-
-reader.readAsDataURL(file)
-
-}
-
-})
 async function loadOrdersFromServer(){
 
 try{
@@ -2356,32 +1881,56 @@ console.error("Error loading orders", err)
 
 }
 
-window.onload = function(){
-  loadOrdersFromServer()
-  homePage()
-}
-
 let currentSlide = 0
-let slides = document.getElementsByClassName("banner")
 
 function showSlide(index){
-  for(let i=0;i<slides.length;i++){
-    slides[i].classList.remove("active")
-  }
-  slides[index].classList.add("active")
+
+let slides = document.getElementsByClassName("banner")
+
+if(slides.length === 0) return
+
+for(let i=0;i<slides.length;i++){
+slides[i].style.display = "none"
+}
+
+slides[index].style.display = "block"
+currentSlide = index
+
 }
 
 function nextSlide(){
-  currentSlide = (currentSlide + 1) % slides.length
-  showSlide(currentSlide)
+
+let slides = document.getElementsByClassName("banner")
+
+currentSlide = (currentSlide + 1) % slides.length
+
+showSlide(currentSlide)
+
 }
 
 function prevSlide(){
-  currentSlide = (currentSlide - 1 + slides.length) % slides.length
-  showSlide(currentSlide)
+
+let slides = document.getElementsByClassName("banner")
+
+currentSlide = (currentSlide - 1 + slides.length) % slides.length
+
+showSlide(currentSlide)
+
 }
 
+setTimeout(()=>{
 setInterval(nextSlide,3000)
+},1000)
 
+// SAFE LOAD (no crash)
+window.addEventListener("load", function(){
+  if(typeof showSlide === "function"){
+    showSlide(0)
+  }
+})
 
-
+// LOAD HOME PAGE FIRST
+window.addEventListener("DOMContentLoaded", function(){
+  homePage()
+})
+homePage()

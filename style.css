@@ -47,7 +47,6 @@ font-weight:600;
 
   display:flex;
   justify-content:center;
-  flex-wrap:wrap;
   gap:10px;
 
   padding:10px;
@@ -88,23 +87,19 @@ gap:5px;
 /* FULL WIDTH BANNER */
 .banner-slider{
   width:100%;
-  height:220px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  height:180px;   /* 🔥 reduce height */
+  overflow:hidden;
+  border-radius:12px;
+  margin:15px;
   position:relative;
-  background: linear-gradient(135deg, #2e7d32, #66bb6a, #cddc39, #fbc02d);
-background-size: 300% 300%;
-animation: gradientMove 6s ease infinite;
 }
 
 /* BANNER */
 .banner{
   display:none;
   width:100%;
-  padding:20px;
-  align-items:center;
-  justify-content:space-between;
+  height:100%;
+  position:relative;
 }
 
 .banner.active{
@@ -127,12 +122,6 @@ animation: gradientMove 6s ease infinite;
 }
 
 /* IMAGE */
-.banner img{
-  width:160px;
-  margin-right:40px;
-
-  transform:translateY(-15px); /* 🔥 mele shift */
-}
 
 /* ARROWS */
 .banner-arrow{
@@ -670,17 +659,22 @@ margin:auto;
 }
 
 .post-card{
-background:white;
-border-radius:15px;
-padding:15px;
-margin:15px 0;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  background:white;
+  border-radius:15px;
+  margin:20px auto;
+  padding:0;
+  max-width:500px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  overflow:hidden;
+}
+.post-card{
+  display:block !important;
 }
 
 .post-header{
-display:flex;
-align-items:center;
-margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  padding:10px;
 }
 
 .avatar{
@@ -697,15 +691,16 @@ margin-right:10px;
 }
 
 .post-img{
-width:100%;
-border-radius:10px;
-margin-top:10px;
+  width:100%;
+  height:auto;
+  display:block;
 }
 
 .post-actions{
-display:flex;
-justify-content:space-around;
-margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+  font-size:20px;
 }
 
 .post-actions button{
@@ -806,11 +801,6 @@ transform:scale(1.05);
   font-weight:bold;
   box-shadow:0 4px 8px rgba(0,0,0,0.2);
 }
-#app{
-  margin-top:20px;
-  position:relative;
-  z-index:1;
-}
 @keyframes gradientMove {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -833,22 +823,18 @@ html{
     gap:8px;
   }
 
-  .banner-slider{
-  width:100%;
-  height:220px;
-  position:relative;
-  overflow:hidden;
-}
+    .banner-slider{
+    margin: 15px;
+    overflow: hidden;
+    border-radius: 12px;
+   }
 
   .banner{
     flex-direction:column;
     text-align:center;
   }
 
-  .banner img{
-    width:120px;
-    margin-top:10px;
-  }
+
 
   .search-container,
   .below-banner{
@@ -891,10 +877,7 @@ html{
     width:100%;
   }
 
-  .banner img{
-    width:140px;
-    margin:10px auto 0 auto !important;
-  }
+
 
   /* REMOVE LEFT GAP */
   body{
@@ -910,8 +893,271 @@ html{
     text-align:center;
   }
 
-  .banner img{
-    width:130px;
+
+}
+/* 🌿 THEME COLORS */
+:root{
+--green:#1b5e20;
+--light-green:#2e7d32;
+--yellow:#fdd835;
+--bg:#f5f9f5;
+}
+
+/* BODY */
+body{
+background:var(--bg);
+margin:0;
+font-family: 'Segoe UI', sans-serif;
+}
+
+/* BUTTON */
+button{
+border:none;
+border-radius:20px;
+padding:10px 16px;
+cursor:pointer;
+}
+
+/* PRIMARY BUTTON */
+.primary-btn{
+background:var(--green);
+color:white;
+}
+
+/* SECONDARY */
+.yellow-btn{
+background:var(--yellow);
+color:black;
+}
+.feed-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
+border-top:1px solid #ddd;
+z-index:999;
+}
+
+.feed-nav button{
+background:none;
+border:none;
+cursor:pointer;
+font-size:22px;
+color:#222;
+}
+
+.feed-nav button:hover{
+color:#0095f6;
+}
+
+.banner{
+position: relative;
+display: none;
+}
+
+.banner.active{
+display: block;
+}
+
+.banner-text{
+position:absolute;
+bottom:10px;
+left:10px;
+background:rgba(0,0,0,0.6);
+color:white;
+padding:6px 10px;
+border-radius:6px;
+font-size:13px;
+}
+/* 🔥 OFFER BANNER NEW STYLE */
+
+.banner-slider{
+height:auto;
+background: linear-gradient(135deg,#1b5e20,#2e7d32);
+padding:15px;
+border-radius:12px;
+}
+
+.offer-title{
+text-align:center;
+font-size:18px;
+font-weight:bold;
+margin-bottom:12px;
+color:#ffffff;   /* 🔥 white so visible */
+z-index:2;
+position:relative;
+}
+
+.offer-card{
+background:#fdd835;
+padding:10px;
+border-radius:12px;
+min-width:90px;   /* 🔥 fixed width */
+text-align:center;
+box-shadow:0 3px 8px rgba(0,0,0,0.2);
+flex-shrink:0;    /* 🔥 no shrink */
+}
+
+.offer-card img{
+width:50px;
+height:50px;
+object-fit:contain;
+}
+
+.offer-card p{
+font-size:11px;
+margin-top:5px;
+font-weight:600;
+}
+
+/* arrows clean */
+.banner-arrow{
+background:transparent;
+color:#fdd835;   /* yellow arrows */
+font-size:24px;
+}
+@keyframes scrollOffers{
+0%{ transform:translateX(0); }
+100%{ transform:translateX(-50%); }
+}
+
+.offer-items{
+overflow:hidden;
+width:100%;
+}
+.offer-track{
+display:flex;
+gap:12px;
+width:max-content;
+animation:scrollX 12s linear infinite;
+}
+
+@keyframes scrollX{
+0%{ transform:translateX(-50%); }
+100%{ transform:translateX(0); }
+}
+#app{
+  display:none;
+  position:relative;
+  z-index:9999;
+  padding:20px;
+  min-height:100vh;
+  background:#f4f6f8;
+}
+#app *{
+  color:#000;
+}
+body{
+  font-size:16px;
+}
+
+.post-card p{
+  font-size:16px;
+  line-height:1.4;
+}
+
+.post-header b{
+  font-size:16px;
+}
+
+.post-footer{
+  font-size:14px;
+}
+@media (max-width:600px){
+
+  body{
+    padding:10px;
+  }
+
+
+  .profile-img{
+    width:80px;
+    height:80px;
+  }
+
+  textarea{
+    font-size:14px;
   }
 
 }
+.caption{
+  padding:0 10px 10px;
+  font-size:14px;
+}
+@media(max-width:600px){
+
+  .post-card{
+    max-width:100%;
+    border-radius:0;
+  }
+
+  .post-actions{
+    font-size:18px;
+  }
+
+  .caption{
+    font-size:13px;
+  }
+
+}
+/* 🔥 INSTAGRAM STYLE ACTIONS */
+
+.post-actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+}
+
+.left-actions{
+  display:flex;
+  gap:15px;
+}
+
+.right-actions{
+  display:flex;
+}
+
+.post-actions button{
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.post-actions button:hover{
+  transform:scale(1.2);
+}
+
+/* ❤️ LIKE COLOR */
+.post-actions button:first-child{
+  color:#e53935;
+}
+
+/* 💬 COMMENT */
+.post-actions button:nth-child(2){
+  color:#555;
+}
+
+/* 📤 SHARE */
+.post-actions button:nth-child(3){
+  color:#0095f6;
+}
+
+/* 🔖 SAVE */
+.right-actions button{
+  color:#333;
+}
+
+/* FOOTER */
+.post-footer{
+  padding:0 10px;
+  font-size:14px;
+}
+
+
