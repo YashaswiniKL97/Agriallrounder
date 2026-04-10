@@ -60,7 +60,7 @@ orderHistory:"Order History",
 bookingHistory:"Booking History",
 track:"Track Order",
 admin:"Admin",
-search:"Search seeds, fertilizers, machines...",
+search:"Search machines, drone, borewell, organic...",
 
 addCart:"Add to Cart",
 bookMachine:"Book Machine",
@@ -85,8 +85,12 @@ MOP:"MOP",
 "Water Pump":"Water Pump",
 "Sprinkler":"Sprinkler",
 
+Borewell:"Borewell Scanning",
+Drone:"Drone Service",
+DKC:"DKC Organic",
 Tractor:"Tractor",
 Rotavator:"Rotavator",
+
 "Power Tiller":"Power Tiller",
 Seeder:"Seeder",
 Sprayer:"Sprayer",
@@ -155,7 +159,7 @@ orderHistory:"ಆರ್ಡರ್ ಇತಿಹಾಸ",
 bookingHistory:"ಬುಕಿಂಗ್ ಇತಿಹಾಸ",
 track:"ಆರ್ಡರ್ ಟ್ರ್ಯಾಕ್",
 admin:"ಆಡ್ಮಿನ್",
-search:"ಬೀಜ, ರಸಗೊಬ್ಬರ, ಯಂತ್ರಗಳನ್ನು ಹುಡುಕಿ...",
+search:"ಯಂತ್ರಗಳು, ಡ್ರೋನ್, ಬೋರ್‌ವೆಲ್, ಆರ್ಗಾನಿಕ್ ಹುಡುಕಿ...",
 
 addCart:"ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ",
 bookMachine:"ಯಂತ್ರ ಬುಕ್ ಮಾಡಿ",
@@ -179,6 +183,10 @@ MOP:"ಎಂಒಪಿ",
 "Drip Pipe":"ಡ್ರಿಪ್ ಪೈಪ್",
 "Water Pump":"ನೀರಿನ ಪಂಪ್",
 "Sprinkler":"ಸ್ಪ್ರಿಂಕ್ಲರ್",
+
+Borewell:"ಬೋರ್ವೆಲ್ ಸ್ಕ್ಯಾನಿಂಗ್",
+Drone:"ಡ್ರೋನ್ ಸೇವೆ",
+DKC:"DKC ಆರ್ಗ್ಯಾನಿಕ್",
 
 Tractor:"ಟ್ರಾಕ್ಟರ್",
 Rotavator:"ರೋಟಾವೇಟರ್",
@@ -249,7 +257,7 @@ orderHistory:"ऑर्डर इतिहास",
 bookingHistory:"बुकिंग इतिहास",
 track:"ऑर्डर ट्रैक करें",
 admin:"एडमिन",
-search:"बीज, उर्वरक, मशीन खोजें...",
+search:"मशीन, ड्रोन, बोरवेल, ऑर्गेनिक खोजें...",
 
 addCart:"कार्ट में जोड़ें",
 bookMachine:"मशीन बुक करें",
@@ -273,6 +281,10 @@ MOP:"एमओपी",
 "Drip Pipe":"ड्रिप पाइप",
 "Water Pump":"पानी का पंप",
 "Sprinkler":"स्प्रिंकलर",
+
+Borewell:"बोरवेल स्कैनिंग",
+Drone:"ड्रोन सेवा",
+DKC:"DKC ऑर्गेनिक",
 
 Tractor:"ट्रैक्टर",
 Rotavator:"रोटावेटर",
@@ -349,7 +361,7 @@ orderHistory:"ஆர்டர் வரலாறு",
 bookingHistory:"புக்கிங் வரலாறு",
 track:"ஆர்டர் கண்காணிப்பு",
 admin:"அட்மின்",
-search:"விதைகள், உரங்கள், இயந்திரங்கள் தேடவும்...",
+search:"யந்திரம், ட்ரோன், போர்வெல், ஆர்கானிக் தேடுங்கள்...",
 
 addCart:"கார்டில் சேர்",
 bookMachine:"யந்திரம் பதிவு செய்",
@@ -373,6 +385,10 @@ MOP:"எம்ஓபி",
 "Drip Pipe":"ட்ரிப் পাইப்",
 "Water Pump":"நீர் பம்ப்",
 "Sprinkler":"ஸ்பிரிங்களர்",
+
+Borewell:"போர் வெல் ஸ்கேனிங்",
+Drone:"ட்ரோன் சேவை",
+DKC:"DKC ஆர்கானிக்",
 
 Tractor:"டிராக்டர்",
 Rotavator:"ரோட்டவேட்டர்",
@@ -452,8 +468,7 @@ orderHistory:"ఆర్డర్ చరిత్ర",
 bookingHistory:"బుకింగ్ చరిత్ర",
 track:"ఆర్డర్ ట్రాక్",
 admin:"అడ్మిన్",
-
-search:"విత్తనాలు, ఎరువులు, యంత్రాలు వెతకండి...",
+search:"యంత్రాలు, డ్రోన్, బోర్‌వెల్, ఆర్గానిక్ వెతకండి...",
 
 addCart:"కార్ట్‌లో జోడించు",
 bookMachine:"మెషిన్ బుక్ చేయండి",
@@ -478,6 +493,10 @@ MOP:"ఎమ్‌ఓపీ",
 "Drip Pipe":"డ్రిప్ పైప్",
 "Water Pump":"నీటి పంప్",
 "Sprinkler":"స్ప్రింక్లర్",
+
+Borewell:"బోర్‌వెల్ స్కానింగ్",
+Drone:"డ్రోన్ సేవ",
+DKC:"DKC ఆర్గానిక్",
 
 Tractor:"ట్రాక్టర్",
 Rotavator:"రోటావేటర్",
@@ -534,65 +553,43 @@ const QR_IMAGE="images/phonepeQR.png"
 /* CATEGORIES */
 
 const categories=[
-{name:"Seeds",img:"images/seeds.png"},
-{name:"Fertilizers",img:"images/fertilizer.png"},
-{name:"Pesticides",img:"images/pesticide.png"},
-{name:"Irrigation",img:"images/irrigation.png"},
-{name:"Machines",img:"images/tractor.png"}
+
+{name:"Machines",img:"images/tractor.png"},
+{name:"Borewell",img:"images/borewell.png"},
+{name:"Drone",img:"images/drone.png"},
+{name:"DKC",img:"images/organic.png"}
+
 ]
 
 /* PRODUCTS */
 
 let allProducts={
 
-Seeds:[
-
-{name:"Paddy",price:1200,img:"images/paddy.png"},
-{name:"Maize",price:900,img:"images/maize.png"},
-{name:"Tomato",price:500,img:"images/tomato.png"}
-
-],
-
-Fertilizers:[
-
-{name:"Urea",price:300,img:"images/urea.png"},
-{name:"20:20:0:13",price:1450,img:"images/fertilizer.png"},
-{name:"16:20:0:13",price:1350,img:"images/fertilizer.png"},
-{name:"DAP",price:1380,img:"images/dap.png"},
-{name:"SSP",price:620,img:"images/fertilizer.png"},
-{name:"MOP",price:1800,img:"images/fertilizer.png"},
-{name:"10:26:26",price:1880,img:"images/fertilizer.png"},
-{name:"19:19:19",price:2050,img:"images/fertilizer.png"},
-{name:"CAN (25kg)",price:1300,img:"images/fertilizer.png"},
-{name:"M Sulphate",price:570,img:"images/fertilizer.png"},
-{name:"A Sulphate",price:900,img:"images/fertilizer.png"}
-
-],
-
-Pesticides:[
-
-{name:"Neem",price:400,img:"images/neem.png"},
-{name:"Insect",price:550,img:"images/insecticide.png"},
-{name:"Fungicide",price:350,img:"images/fungicide.png"}
-
-],
-
-Irrigation:[
-
-{name:"Drip Pipe",price:2000,img:"images/drip.png"},
-{name:"Water Pump",price:5000,img:"images/pump.png"},
-{name:"Sprinkler",price:800,img:"images/sprinkler.png"}
-
-],
-
 Machines:[
 
 {name:"Tractor",price:800,img:"images/tractor.png"},
 {name:"Rotavator",price:600,img:"images/rotavator.png"},
-{name:"Power Tiller",price:500,img:"images/powertiller.png"},
-{name:"Seeder",price:400,img:"images/seeder.png"},
-{name:"Sprayer",price:300,img:"images/sprayer.png"},
-{name:"Harvester",price:1500,img:"images/harvester.png"}
+{name:"Drone Spraying",price:1500,img:"images/drone.png"}
+
+],
+
+Borewell:[
+
+{name:"Camera Scanning",price:2000,img:"images/borewell.png"}
+
+],
+
+Drone:[
+
+{name:"Drone Spraying",price:1500,img:"images/drone.png"},
+{name:"Drone Survey",price:2000,img:"images/drone.png"}
+
+],
+
+DKC:[
+
+{name:"Organic Fertilizer",price:500,img:"images/organic.png"},
+{name:"Bio Compost",price:300,img:"images/organic.png"}
 
 ]
 
@@ -601,10 +598,17 @@ Machines:[
 /* CART COUNT */
 
 function updateCart(){
-let cartCount=document.getElementById("cartCount")
-if(cartCount){
-cartCount.innerText=cart.length
-}
+let cartCount = document.getElementById("cartCount")
+
+cartCount.innerText = cart.length
+
+// 🔥 ANIMATION ADD
+cartCount.classList.add("bump")
+
+setTimeout(()=>{
+cartCount.classList.remove("bump")
+},300)
+
 }
 
 /* BACK BUTTON */
@@ -631,13 +635,13 @@ function homePage(){
 let mainContent = document.getElementById("mainContent")
 if(mainContent){
 mainContent.style.display = "block"
+mainContent.style.paddingTop = "10px"
 }
 
 let app = document.getElementById("app")
-
-// 🔥 ADD THIS LINE
 app.style.display = "block"
 
+// ✅ CLEAR OLD CONTENT
 app.innerHTML = ""
 
 // ✅ SHOW NAVBAR
@@ -646,33 +650,159 @@ if(nav){
 nav.style.display = "flex"
 }
 
-// ✅ CLEAR FEED
-app.innerHTML=""
-
+// ✅ UPDATE CART
 updateCart()
 
-let grid=document.createElement("div")
-grid.className="grid"
+// ✅ GRID CREATE
+let grid = document.createElement("div")
+grid.className = "grid"
 
-categories.forEach(c=>{
+// ✅ LOOP CATEGORIES
+categories.forEach((c,index)=>{
 
-let card=document.createElement("div")
-card.className="card"
+let card = document.createElement("div")
 
-card.innerHTML=`
+// LEFT RIGHT ANIMATION
+if(index % 2 === 0){
+card.className = "card left"
+}else{
+card.className = "card right"
+}
+
+card.innerHTML = `
 <img src="${c.img}">
 <h3>${translations[lang][c.name] || c.name}</h3>
 `
 
-card.onclick=()=>openCategory(c.name)
+card.onclick = () => openCategory(c.name)
 
 grid.appendChild(card)
 
 })
 
+// ✅ ADD TO PAGE
 app.appendChild(grid)
+
+// 🔥 SCROLL ANIMATION TRIGGER
+setTimeout(()=>{
+revealCards()
+},100)
+
 }
+
 /* ================= SEARCH FUNCTION ================= */
+
+// 🔍 SEARCH FUNCTION
+
+window.addEventListener("DOMContentLoaded", function(){
+
+let search = document.getElementById("searchBox")
+
+if(!search) return
+
+search.addEventListener("input", function(){
+
+let value = this.value.toLowerCase()
+
+if(value.trim() === ""){
+homePage()
+return
+}
+
+app.innerHTML = ""
+backBtn()
+
+let grid = document.createElement("div")
+grid.className = "grid"
+
+let found = false
+
+for(let category in allProducts){
+
+// 🔥 CATEGORY MATCH
+if(category.toLowerCase().includes(value)){
+
+found = true
+
+allProducts[category].forEach(p=>{
+
+let card = document.createElement("div")
+card.className = "card show"
+
+card.innerHTML = `
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<p>₹ ${p.price}</p>
+`
+
+let btn = document.createElement("button")
+
+if(category==="Machines" || category==="Drone" || category==="Borewell"){
+btn.innerText = "Book Now"
+btn.onclick = ()=>openMachineBooking(p)
+}else{
+btn.innerText = "Add to Cart"
+btn.onclick = ()=>{
+cart.push({name:p.name,price:p.price,qty:1})
+updateCart()
+}
+}
+
+card.appendChild(btn)
+grid.appendChild(card)
+
+})
+
+}
+
+// 🔥 PRODUCT MATCH
+allProducts[category].forEach(p=>{
+
+if(p.name.toLowerCase().includes(value)){
+
+found = true
+
+let card = document.createElement("div")
+card.className = "card show"
+
+card.innerHTML = `
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<p>₹ ${p.price}</p>
+`
+
+let btn = document.createElement("button")
+
+if(category==="Machines" || category==="Drone" || category==="Borewell"){
+btn.innerText = "Book Now"
+btn.onclick = ()=>openMachineBooking(p)
+}else{
+btn.innerText = "Add to Cart"
+btn.onclick = ()=>{
+cart.push({name:p.name,price:p.price,qty:1})
+updateCart()
+}
+}
+
+card.appendChild(btn)
+grid.appendChild(card)
+
+}
+
+})
+
+}
+
+if(!found){
+app.innerHTML = "<h3 style='margin:20px'>No results found</h3>"
+return
+}
+
+app.appendChild(grid)
+
+})
+
+})
 
 /* CATEGORY */
 
@@ -713,7 +843,7 @@ plus.onclick=()=>{qty++;num.innerText=qty}
 
 let add=document.createElement("button")
 
-if(category==="Machines"){
+if(category==="Machines" || category==="Borewell" || category==="Drone"){
 
 add.innerText = translations[lang].bookMachine
 add.onclick=()=>openMachineBooking(p)
@@ -756,7 +886,7 @@ let t = translations[lang]
 
 form.innerHTML=`
 
-<h2>${translations[lang][machine.name] || machine.name} - ${t.bookMachine}</h2>
+<h2>${machine.name} Service Booking</h2>
 
 <input id="name" placeholder="${t.customerName}">
 <input id="phone" placeholder="${t.phone}">
@@ -1737,14 +1867,6 @@ let waBookBtn = document.getElementById("waBookBtn")
 if(waOrderBtn) waOrderBtn.innerText = "🛒 " + t.waOrder
 if(waBookBtn) waBookBtn.innerText = "🚜 " + t.waBook
 
-let formTitle = document.getElementById("formTitle")
-if(formTitle) formTitle.innerText = "📝 " + t.formTitle
-
-let orderFormBtn = document.getElementById("orderFormBtn")
-let bookingFormBtn = document.getElementById("bookingFormBtn")
-
-if(orderFormBtn) orderFormBtn.innerText = "📝 " + t.orderForm
-if(bookingFormBtn) bookingFormBtn.innerText = "🚜 " + t.bookingForm
 
 let feedTitle=document.getElementById("feedTitle")
 if(feedTitle) feedTitle.innerText="🌾 "+t.feedTitle
@@ -1884,53 +2006,87 @@ console.error("Error loading orders", err)
 let currentSlide = 0
 
 function showSlide(index){
-
-let slides = document.getElementsByClassName("banner")
+let slides = document.getElementsByClassName("banner-slide")
 
 if(slides.length === 0) return
 
 for(let i=0;i<slides.length;i++){
-slides[i].style.display = "none"
+slides[i].classList.remove("active")
 }
 
-slides[index].style.display = "block"
+slides[index].classList.add("active")
 currentSlide = index
-
 }
 
 function nextSlide(){
-
-let slides = document.getElementsByClassName("banner")
+let slides = document.getElementsByClassName("banner-slide")
 
 currentSlide = (currentSlide + 1) % slides.length
-
 showSlide(currentSlide)
-
 }
 
-function prevSlide(){
-
-let slides = document.getElementsByClassName("banner")
-
-currentSlide = (currentSlide - 1 + slides.length) % slides.length
-
-showSlide(currentSlide)
-
-}
-
-setTimeout(()=>{
+// AUTO START
 setInterval(nextSlide,3000)
-},1000)
 
-// SAFE LOAD (no crash)
-window.addEventListener("load", function(){
-  if(typeof showSlide === "function"){
-    showSlide(0)
-  }
-})
-
-// LOAD HOME PAGE FIRST
+// FIRST LOAD
 window.addEventListener("DOMContentLoaded", function(){
-  homePage()
+showSlide(0)
 })
+
 homePage()
+
+// 🔥 SCROLL ANIMATION
+function revealCards(){
+
+let cards = document.querySelectorAll(".card")
+
+cards.forEach(card=>{
+
+let top = card.getBoundingClientRect().top
+let screenHeight = window.innerHeight
+
+// 👇 ENTER
+if(top < screenHeight - 50){
+card.classList.add("show")
+}
+
+// 👇 EXIT (important)
+else{
+card.classList.remove("show")
+}
+
+})
+
+}
+
+window.addEventListener("scroll",revealCards)
+window.addEventListener("load",()=>{
+revealCards()
+
+// 🔥 FORCE RE-TRIGGER
+setTimeout(revealCards,100)
+})
+// WhatsApp buttons animation (simple)
+function revealButtons(){
+
+let orderBtn = document.getElementById("waOrderBtn")
+let bookBtn = document.getElementById("waBookBtn")
+
+if(!orderBtn || !bookBtn) return
+
+let position = orderBtn.getBoundingClientRect().top
+let screen = window.innerHeight
+
+if(position < screen - 50){
+orderBtn.classList.add("show-btn")
+bookBtn.classList.add("show-btn")
+}else{
+orderBtn.classList.remove("show-btn")
+bookBtn.classList.remove("show-btn")
+}
+
+}
+
+window.addEventListener("scroll", revealButtons)
+window.addEventListener("load", revealButtons)
+

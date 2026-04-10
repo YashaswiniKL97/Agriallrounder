@@ -77,119 +77,18 @@ gap:5px;
 
 /* BELOW BANNER */
 .below-banner{
-  display:flex;
-  justify-content:center;  /* 👈 center */
-  align-items:center;
-  gap:15px;
-  margin:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:15px;
+margin:20px auto;
+flex-wrap:wrap;
+width:100%;
 }
+
 
 /* FULL WIDTH BANNER */
-.banner-slider{
-  width:100%;
-  height:180px;   /* 🔥 reduce height */
-  overflow:hidden;
-  border-radius:12px;
-  margin:15px;
-  position:relative;
-}
 
-/* BANNER */
-.banner{
-  display:none;
-  width:100%;
-  height:100%;
-  position:relative;
-}
-
-.banner.active{
-  display:flex;
-}
-
-/* TEXT */
-.banner-text h2{
-  letter-spacing:1px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #1b5e20;
-}
-
-.banner-text p{
-  font-size: 16px;
-  color: #2e7d32;
-
-  margin-top:-10px;   /* 🔥 mele shift */
-}
-
-/* IMAGE */
-
-/* ARROWS */
-.banner-arrow{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-
-  background:transparent;   /* ❌ remove white */
-  border:none;
-
-  font-size:26px;           /* 🔥 bigger */
-  color:#1b5e20;            /* 🌿 green */
-
-  cursor:pointer;
-
-  transition:0.3s;
-}
-
-.banner-arrow:hover{
-  transform:translateY(-50%) scale(1.2);
-  color:#0d3c14;
-}
-
-.banner-arrow.left{ left:10px; }
-.banner-arrow.right{ right:10px; }
-
-/* GRID */
-
-.grid{
-display:grid;
-margin-top: 30px;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:22px;
-padding:25px;
-}
-
-/* CARD */
-
-.card{
-background:white;
-padding:20px;
-border-radius:12px;
-text-align:center;
-box-shadow:0 4px 14px rgba(0,0,0,0.08);
-transition:0.2s;
-}
-
-.card:hover{
-transform:translateY(-4px);
-}
-
-.card img{
-width:90px;
-height:90px;
-object-fit:contain;
-margin-bottom:10px;
-}
-
-.card h3{
-margin:8px 0;
-font-weight:600;
-}
-
-.card p{
-margin:6px 0;
-font-weight:500;
-color:#333;
-}
 
 /* PRODUCT BUTTONS */
 
@@ -767,18 +666,7 @@ transition:0.3s;
 .feed-btn:hover{
 transform:scale(1.05);
 }
-.offer-slider{
-  margin:20px auto;
-  width:90%;
-  max-width:600px;
-  background:white;
-  padding:15px;
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
+
 
 /* 🔍 SEARCH BOX STYLE */
 #searchBox{
@@ -811,7 +699,11 @@ html{
   scroll-behavior: smooth;
 }
 .search-container{
-  margin-top: 0;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+margin-top:0;
 }
 /* ================= MOBILE VIEW FIX ================= */
 @media (max-width: 768px){
@@ -822,28 +714,13 @@ html{
     justify-content:center;
     gap:8px;
   }
-
-    .banner-slider{
-    margin: 15px;
-    overflow: hidden;
-    border-radius: 12px;
-   }
-
-  .banner{
-    flex-direction:column;
-    text-align:center;
-  }
-
-
-
-  .search-container,
-  .below-banner{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-  }
+.search-container{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:15px;
+flex-wrap:wrap;
+}
 
   .grid{
     grid-template-columns: 1fr 1fr;
@@ -857,44 +734,7 @@ html{
 
 }
 /* 🔥 MOBILE FIX FINAL */
-@media (max-width: 768px){
 
-  /* FULL WIDTH FIX */
-  .banner-slider{
-    width:100% !important;
-    padding:0;
-  }
-
-  .banner{
-  display:none;
-  width:100%;
-  padding:20px;
-  align-items:center;
-  justify-content:space-between;
-}
-
-  .banner-text{
-    width:100%;
-  }
-
-
-
-  /* REMOVE LEFT GAP */
-  body{
-    margin:0;
-    padding:0;
-  }
-
-}
-@media (max-width:768px){
-
-  .banner{
-    padding:15px;
-    text-align:center;
-  }
-
-
-}
 /* 🌿 THEME COLORS */
 :root{
 --green:#1b5e20;
@@ -954,65 +794,7 @@ color:#222;
 color:#0095f6;
 }
 
-.banner{
-position: relative;
-display: none;
-}
 
-.banner.active{
-display: block;
-}
-
-.banner-text{
-position:absolute;
-bottom:10px;
-left:10px;
-background:rgba(0,0,0,0.6);
-color:white;
-padding:6px 10px;
-border-radius:6px;
-font-size:13px;
-}
-/* 🔥 OFFER BANNER NEW STYLE */
-
-.banner-slider{
-height:auto;
-background: linear-gradient(135deg,#1b5e20,#2e7d32);
-padding:15px;
-border-radius:12px;
-}
-
-.offer-title{
-text-align:center;
-font-size:18px;
-font-weight:bold;
-margin-bottom:12px;
-color:#ffffff;   /* 🔥 white so visible */
-z-index:2;
-position:relative;
-}
-
-.offer-card{
-background:#fdd835;
-padding:10px;
-border-radius:12px;
-min-width:90px;   /* 🔥 fixed width */
-text-align:center;
-box-shadow:0 3px 8px rgba(0,0,0,0.2);
-flex-shrink:0;    /* 🔥 no shrink */
-}
-
-.offer-card img{
-width:50px;
-height:50px;
-object-fit:contain;
-}
-
-.offer-card p{
-font-size:11px;
-margin-top:5px;
-font-weight:600;
-}
 
 /* arrows clean */
 .banner-arrow{
@@ -1025,29 +807,15 @@ font-size:24px;
 100%{ transform:translateX(-50%); }
 }
 
-.offer-items{
-overflow:hidden;
-width:100%;
+#app{
+  display:block;   /* 🔥 CHANGE */
+  padding:20px;
+  margin-top:20px; /* 🔥 CHANGE */
 }
-.offer-track{
-display:flex;
-gap:12px;
-width:max-content;
-animation:scrollX 12s linear infinite;
+#mainContent{
+margin-top:10px;
 }
 
-@keyframes scrollX{
-0%{ transform:translateX(-50%); }
-100%{ transform:translateX(0); }
-}
-#app{
-  display:none;
-  position:relative;
-  z-index:9999;
-  padding:20px;
-  min-height:100vh;
-  background:#f4f6f8;
-}
 #app *{
   color:#000;
 }
@@ -1159,5 +927,392 @@ body{
   padding:0 10px;
   font-size:14px;
 }
+.banner-slider{
+width:100%;
+height:200px;
+position:relative;
+overflow:hidden;
+border-radius:12px;
+margin:15px 0;
+}
 
+.banner-slide{
+width:100%;
+height:220px;
+background-size:cover;
+background-position:center;
+display:none;
+position:absolute;
+}
 
+.banner-text h2{
+margin:0;
+font-size:20px;
+}
+
+.banner-text p{
+margin:5px 0 0;
+font-size:14px;
+}
+.card img{
+width:80px;
+height:80px;
+object-fit:contain;
+background:white;
+border-radius:10px;
+padding:5px;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:20px;
+padding:20px;
+margin-top:20px; /* 🔥 ADD */
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:20px;
+text-align:center;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
+cursor:pointer;
+min-height:160px; /* 🔥 ADD */
+}
+
+.card h3{
+margin-top:10px;
+font-size:16px;
+}
+.banner-slider{
+width:100%;
+height:200px;
+position:relative;
+overflow:hidden;
+border-radius:12px;
+margin:15px 0;
+}
+
+.banner-slide{
+width:100%;
+height:220px;
+background-size:cover;
+background-position:center;
+display:none;
+position:absolute;
+}
+
+.banner-slide.active{
+display:block;
+}
+
+.banner-text{
+position:absolute;
+bottom:20px;
+left:20px;
+color:white;
+background:rgba(0,0,0,0.5);
+padding:10px 15px;
+border-radius:10px;
+}
+/* 🔥 ANIMATION BASE */
+.card{
+opacity:0;
+transform:translateY(40px);
+transition:all 0.6s ease;
+}
+
+/* LEFT ENTRY */
+.card.left{
+transform:translateX(-80px);
+}
+
+/* RIGHT ENTRY */
+.card.right{
+transform:translateX(80px);
+}
+
+/* SHOW */
+.card.show{
+opacity:1;
+transform:translateX(0) translateY(0);
+}
+.card{
+  transition: all 0.3s ease;
+}
+
+.card:hover{
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+button{
+  transition: all 0.2s ease;
+}
+
+button:active{
+  transform: scale(0.95);
+}
+button{
+  position: relative;
+  overflow: hidden;
+}
+
+button::after{
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  transition: width 0.4s, height 0.4s;
+}
+
+button:active::after{
+  width: 200px;
+  height: 200px;
+}
+.card img{
+  transition: transform 0.3s ease;
+}
+
+.card:hover img{
+  transform: scale(1.1);
+}
+body{
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.card{
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.6s ease;
+}
+
+.card.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+#cartCount{
+  transition: transform 0.3s;
+}
+
+#cartCount.bump{
+  transform: scale(1.4);
+}
+.banner-slide{
+  transition: transform 1s ease;
+}
+
+.banner-slide.active{
+  transform: scale(1.05);
+}
+.skeleton{
+  height:120px;
+  margin:10px;
+  border-radius:10px;
+  background: linear-gradient(90deg,#eee,#ddd,#eee);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer{
+  0%{background-position:-200px 0}
+  100%{background-position:200px 0}
+}
+.banner-slider{
+position: relative;
+overflow: hidden;
+border-radius: 15px;
+}
+
+.banner-slide{
+height: 220px;
+background-size: cover;
+background-position: center;
+position: relative;
+display: none;
+border-radius: 15px;
+}
+
+.banner-slide.active{
+display: block;
+}
+
+/* 🔥 DARK OVERLAY */
+.banner-slide::after{
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.45);
+border-radius: 15px;
+}
+
+/* 🔥 CENTER TEXT */
+.banner-text{
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+text-align: center;
+color: white;
+z-index: 2;
+}
+
+/* 🔥 HEADING STYLE */
+.banner-text h2{
+font-size: 26px;
+font-weight: bold;
+margin-bottom: 8px;
+text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+/* 🔥 SUBTEXT */
+.banner-text p{
+font-size: 14px;
+opacity: 0.95;
+text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+}
+.banner-text{
+animation: fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translate(-50%, -30%);
+}
+to{
+opacity:1;
+transform:translate(-50%, -50%);
+}
+}
+/* 🔥 WHATSAPP PREMIUM BOX */
+
+.whatsapp-box{
+text-align:center;
+margin:60px 20px;
+padding:30px 20px;
+
+background:linear-gradient(135deg,#e8f5e9,#ffffff);
+border-radius:20px;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+
+animation:fadeUp 1s ease;
+}
+
+/* TITLE */
+.whatsapp-box h2{
+font-size:24px;
+margin-bottom:20px;
+color:#1b5e20;
+}
+
+/* BUTTON BASE */
+.whatsapp-box button{
+display:block;
+margin:12px auto;
+padding:14px 24px;
+border-radius:30px;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+/* ORDER BUTTON */
+#waOrderBtn{
+background:linear-gradient(45deg,#25D366,#66bb6a);
+color:white;
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* BOOK BUTTON */
+#waBookBtn{
+background:linear-gradient(45deg,#128C7E,#26a69a);
+color:white;
+box-shadow:0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* HOVER EFFECT */
+.whatsapp-box button:hover{
+transform:scale(1.08);
+}
+
+/* CLICK RIPPLE */
+.whatsapp-box button:active{
+transform:scale(0.95);
+}
+
+/* 🔥 FLOAT ANIMATION */
+#waOrderBtn{
+animation:floatBtn 3s infinite ease-in-out;
+}
+
+#waBookBtn{
+animation:floatBtn 3s infinite ease-in-out;
+animation-delay:0.5s;
+}
+
+@keyframes floatBtn{
+0%{transform:translateY(0);}
+50%{transform:translateY(-8px);}
+100%{transform:translateY(0);}
+}
+
+/* 🔥 GLOW EFFECT */
+#waOrderBtn:hover{
+box-shadow:0 0 20px #25D366;
+}
+
+#waBookBtn:hover{
+box-shadow:0 0 20px #128C7E;
+}
+
+/* 🔥 TITLE ICON ANIMATION */
+.whatsapp-box h2{
+animation:pop 0.8s ease;
+}
+
+@keyframes pop{
+0%{transform:scale(0.8);opacity:0;}
+100%{transform:scale(1);opacity:1;}
+}
+/* WhatsApp buttons animation */
+
+#waOrderBtn{
+opacity:0;
+transform:translateX(-80px);
+transition:all 0.6s ease;
+}
+
+#waBookBtn{
+opacity:0;
+transform:translateX(80px);
+transition:all 0.6s ease;
+}
+
+.show-btn{
+opacity:1 !important;
+transform:translateX(0) !important;
+}
