@@ -12,7 +12,12 @@ if (!window.supabaseInstance) {
 var supabase = window.supabaseInstance
 
 
-const app=document.getElementById("app")
+let app;
+
+window.addEventListener("DOMContentLoaded", () => {
+  app = document.getElementById("app");
+});
+
 // SERVER API
 const API_URL = "https://script.google.com/macros/s/AKfycbw95kOijhFrjNP8PNAPGcfolebFCOMOtdggyfCaNIoABjFLWgl9o9X8XDUmP4UwfjgC/exec"
 
@@ -600,15 +605,16 @@ DKC:[
 function updateCart(){
 let cartCount = document.getElementById("cartCount")
 
-cartCount.innerText = cart.length
+if(cartCount){
+  cartCount.innerText = cart.length
 
-// 🔥 ANIMATION ADD
-cartCount.classList.add("bump")
+  // animation safe
+  cartCount.classList.add("bump")
 
-setTimeout(()=>{
-cartCount.classList.remove("bump")
-},300)
-
+  setTimeout(()=>{
+    cartCount.classList.remove("bump")
+  },300)
+}
 }
 
 /* BACK BUTTON */
@@ -638,7 +644,7 @@ mainContent.style.display = "block"
 mainContent.style.paddingTop = "10px"
 }
 
-let app = document.getElementById("app")
+app = document.getElementById("app") 
 app.style.display = "block"
 
 // ✅ CLEAR OLD CONTENT
@@ -2090,3 +2096,18 @@ bookBtn.classList.remove("show-btn")
 window.addEventListener("scroll", revealButtons)
 window.addEventListener("load", revealButtons)
 
+function revealTopButtons(){
+
+let buttons = document.querySelectorAll(".btn")
+
+buttons.forEach((btn,i)=>{
+
+setTimeout(()=>{
+  btn.classList.add("show-btn")
+}, i * 150) // delay effect 🔥
+
+})
+
+}
+
+window.addEventListener("load", revealTopButtons)
